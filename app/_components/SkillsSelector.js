@@ -133,7 +133,7 @@ function SkillsSelector({ name, defaultSkills = [] }) {
       <div className="flex items-center justify-between">
         <small
           className={`mt-2 ${
-            selected.length < 3 ? "text-red-500" : "text-primary-200"
+            selected.length < 3 ? "text-red-500" : "text-primary-400"
           }`}
         >
           Pick at least 3 skills (currently {selected.length})

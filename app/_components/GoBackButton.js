@@ -9,7 +9,7 @@ export default function GoBackButton() {
   return (
     <button
       onClick={() => router.back()}
-      className="absolute top-4 right-4 bg-primary-800 hover:bg-primary-900 p-3 rounded-full shadow-md transition-colors cursor-pointer"
+      className="absolute top-4 left-4 bg-primary-800 hover:bg-primary-900 p-3 rounded-full shadow-md transition-colors cursor-pointer"
       aria-label="Go back"
     >
       <ArrowLeftIcon className="h-5 w-5 text-white" />

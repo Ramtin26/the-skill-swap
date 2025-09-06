@@ -120,7 +120,7 @@ function UpdateProfileForm({ user }) {
           required
           className="w-full mt-1 px-4 py-3 rounded-sm bg-primary-200 text-primary-800"
         />
-        <small className="text-primary-200">Max 500 characters</small>
+        <small className="text-primary-400">Max 500 characters</small>
       </div>
 
       <div className="space-y-2 flex flex-col gap-2">

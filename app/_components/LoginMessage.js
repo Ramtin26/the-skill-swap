@@ -8,7 +8,7 @@ function LoginMessage() {
         <Link href="/login" className="underline text-accent-500">
           Login
         </Link>{" "}
-        to apply this job position
+        to apply to this job position right now
       </p>
     </div>
   );

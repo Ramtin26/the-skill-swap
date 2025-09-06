@@ -91,6 +91,89 @@ export async function updateUser(formData) {
   revalidatePath("/dashboard/profile");
 }
 
+export async function toggleSaveJob({ seekerId, jobId, isSaved }) {
+  if (!seekerId) throw new Error("Only seekers can save jobs");
+
+  if (isSaved) {
+    const { error } = await supabase
+      .from("saved_jobs")
+      .delete()
+      .eq("seekerId", seekerId)
+      .eq("jobId", jobId);
+
+    if (error) throw new Error("Could not unsave job");
+
+    return { status: "unsaved" };
+  } else {
+    const { error } = await supabase
+      .from("saved_jobs")
+      .insert([{ seekerId, jobId }]);
+
+    if (error) throw new Error("Could not save job");
+
+    return { status: "saved" };
+  }
+}
+
+export async function createApplication(formData) {
+  const jobId = formData.get("jobId");
+  const seekerId = formData.get("seekerId");
+  const note = formData.get("note")?.trim();
+  const resumeFile = formData.get("resume");
+
+  console.log(formData);
+
+  if (!jobId || !seekerId) throw new Error("Missing required fields");
+
+  // Upload resume
+  let resumeURL = null;
+  if (resumeFile) {
+    if (resumeFile.type !== "application/pdf") {
+      throw new Error("Resume must be a PDF file");
+    }
+
+    const filePath = `resumes/${seekerId}-${jobId}.pdf`;
+
+    // const { error: uploadError } = await supabase.storage
+    //   .from("resumes")
+    //   .upload(filePath, resumeFile, { upsert: true });
+
+    // if (uploadError) throw new Error("Resume upload failed");
+
+    // const {
+    //   data: { publicUrl },
+    // } = supabase.storage.from("resumes").getPublicUrl(filePath);
+
+    // resumeURL = publicUrl;
+  }
+
+  const data = {
+    jobId,
+    seekerId,
+    note,
+    resumeFile,
+  };
+
+  console.log("Data:", data);
+
+  // Insert into applications table
+  // const { error } = await supabase.from("applications").insert([
+  //   {
+  //     jobId,
+  //     seekerId,
+  //     note,
+  //     resume: resumeURL,
+  //     status: "in-review",
+  //     reviewed: false,
+  //     rating: null,
+  //   },
+  // ]);
+
+  // if (error) throw new Error("Could not create application");
+
+  return { success: true };
+}
+
 export async function signInAction() {
   await signIn("google", { redirectTo: "/onboarding/role" });
 

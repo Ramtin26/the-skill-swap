@@ -108,6 +108,17 @@ export async function getCountries() {
   }
 }
 
+export async function getSavedJobs(seekerId) {
+  const { data, error } = await supabase
+    .from("saved_jobs")
+    .select("jobId")
+    .eq("seekerId", seekerId);
+
+  if (error) throw new Error("Saved jobs could not be retrieved");
+
+  return data.map((row) => row.jobId);
+}
+
 /////////////
 // CREATE
 

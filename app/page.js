@@ -33,5 +33,3 @@ export default function Page() {
 // MUST ASK AT THE END
 
 // All components should be responsive and compatible with mobile phones
-
-// couldn't we use <link> from next/link instead of button with useRouter?

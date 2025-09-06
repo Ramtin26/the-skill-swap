@@ -1,20 +1,14 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import { differenceInDays, format } from "date-fns";
-import { MapPinIcon, BookmarkIcon } from "@heroicons/react/24/solid";
+import { MapPinIcon } from "@heroicons/react/24/solid";
+import SaveJobButton from "./SaveJobButton";
 
-function JobCard({ job }) {
-  const { id, title, locationType, maxHires, deadline, image } = job;
+function JobCard({ job, seekerId, isSaved }) {
+  const { id: jobId, title, locationType, maxHires, deadline, image } = job;
 
   const daysLeft = differenceInDays(new Date(deadline), new Date());
   const isUrgent = daysLeft <= 3;
-
-  function handleSave() {
-    console.log("CLICKED");
-    // api logic later
-  }
 
   return (
     <div className="grid grid-cols-[12rem_1fr] border border-primary-800">
@@ -33,9 +27,11 @@ function JobCard({ job }) {
         <div className="p-5 bg-primary-950">
           <div className="flex justify-between mb-3">
             <h3 className="text-accent-500 font-semibold text-xl">{title}</h3>
-            <button className="mr-7 cursor-pointer" onClick={handleSave}>
-              <BookmarkIcon className="w-5 h-5 text-primary-300 hover:text-accent-500 " />
-            </button>
+            <SaveJobButton
+              jobId={jobId}
+              seekerId={seekerId}
+              isSaved={isSaved}
+            />
           </div>
 
           <div className="flex items-center justify-between mt-5 mb-2">
@@ -62,7 +58,7 @@ function JobCard({ job }) {
             Deadline: {format(new Date(deadline), "EEE, MMM dd yyyy")}
           </p>
           <Link
-            href={`/jobs/${id}`}
+            href={`/jobs/${jobId}`}
             className="border-l border-primary-800 py-4 px-3 hover:bg-accent-600 transition-all hover:text-primary-900 inline-flex items-center gap-2"
           >
             <span className="text-nowrap">Apply Now</span>
