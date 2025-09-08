@@ -1,5 +1,5 @@
 import { auth } from "../_lib/auth";
-import { getUser } from "../_lib/data-service";
+import { getSavedJobs, getUser } from "../_lib/data-service";
 import SeekerDashboard from "../_components/SeekerDashboard";
 import EmployerDashboard from "../_components/EmployerDashboard";
 
@@ -10,6 +10,7 @@ export const metadata = {
 export default async function Page() {
   const session = await auth();
   const user = await getUser(session?.user?.email);
+  const savedJobs = await getSavedJobs(user.id);
 
   console.log("Session: ", session);
   const firstName = user.fullName?.split(" ").at(0);
@@ -20,7 +21,11 @@ export default async function Page() {
         Welcome, {firstName}
       </h2>
 
-      {user.role === "seeker" ? <SeekerDashboard /> : <EmployerDashboard />}
+      {user.role === "seeker" ? (
+        <SeekerDashboard savedJobs={savedJobs} />
+      ) : (
+        <EmployerDashboard />
+      )}
     </div>
   );
 }

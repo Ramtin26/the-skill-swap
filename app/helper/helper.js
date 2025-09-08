@@ -5,3 +5,10 @@ export function flagToCountryCode(flagUnicode) {
     .join("")
     .toLowerCase();
 }
+
+export function formatCurrency(number) {
+  return new Intl.NumberFormat("us-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(number);
+}

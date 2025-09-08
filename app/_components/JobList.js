@@ -1,14 +1,8 @@
-import { auth } from "../_lib/auth";
-import { getJobs, getSavedJobs, getUser } from "../_lib/data-service";
+import { getJobs } from "../_lib/data-service";
 import JobCard from "./JobCard";
 
 async function JobList({ filter }) {
   const jobs = await getJobs();
-  const session = await auth();
-  const user = session ? await getUser(session?.user?.email) : null;
-
-  const savedJobIds =
-    user?.role === "seeker" ? await getSavedJobs(user.id) : [];
 
   if (!jobs.length) return null;
 
@@ -24,12 +18,7 @@ async function JobList({ filter }) {
   return (
     <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 xl:gap-14">
       {displayedJobs.map((job) => (
-        <JobCard
-          job={job}
-          seekerId={user?.role === "seeker" ? user.id : null}
-          isSaved={savedJobIds.includes(job.id)}
-          key={job.id}
-        />
+        <JobCard job={job} key={job.id} />
       ))}
     </div>
   );

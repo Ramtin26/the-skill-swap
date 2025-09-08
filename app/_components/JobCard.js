@@ -4,7 +4,7 @@ import { differenceInDays, format } from "date-fns";
 import { MapPinIcon } from "@heroicons/react/24/solid";
 import SaveJobButton from "./SaveJobButton";
 
-function JobCard({ job, seekerId, isSaved }) {
+function JobCard({ job }) {
   const { id: jobId, title, locationType, maxHires, deadline, image } = job;
 
   const daysLeft = differenceInDays(new Date(deadline), new Date());
@@ -27,11 +27,7 @@ function JobCard({ job, seekerId, isSaved }) {
         <div className="p-5 bg-primary-950">
           <div className="flex justify-between mb-3">
             <h3 className="text-accent-500 font-semibold text-xl">{title}</h3>
-            <SaveJobButton
-              jobId={jobId}
-              seekerId={seekerId}
-              isSaved={isSaved}
-            />
+            <SaveJobButton jobId={jobId} size={5} />
           </div>
 
           <div className="flex items-center justify-between mt-5 mb-2">

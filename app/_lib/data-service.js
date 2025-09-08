@@ -23,23 +23,12 @@ export async function getJob(id) {
 }
 
 export async function getJobs() {
-  // const { data, error } = await supabase
-  //   .from("jobs")
-  //   .select("id, title, locationType, maxHires, deadline, image")
-  //   .order("title");
-
-  // // await new Promise((res) => setTimeout(res, 1000));
-
-  // if (error) {
-  //   console.error(error);
-  //   throw new Error("Jobs could not be loaded");
-  // }
-
-  // return data;
   try {
     const { data, error } = await supabase
       .from("jobs")
-      .select("id, title, locationType, maxHires, deadline, image")
+      .select("id, title, locationType, maxHires, deadline, image", {
+        head: false,
+      })
       .order("title");
 
     if (error) {
@@ -55,21 +44,6 @@ export async function getJobs() {
 }
 
 export async function getUser(email) {
-  // const { data, error } = await supabase
-  //   .from("users")
-  //   .select("*")
-  //   .eq("email", email)
-  //   .single();
-
-  // // console.log("getUser result - data:", data, "error:", error);
-
-  // if (error && error.code !== "PGRST116") {
-  //   // not found
-  //   console.error("getUser error:", error);
-  //   throw error;
-  // }
-
-  // return data;
   try {
     const { data, error } = await supabase
       .from("users")
@@ -111,12 +85,13 @@ export async function getCountries() {
 export async function getSavedJobs(seekerId) {
   const { data, error } = await supabase
     .from("saved_jobs")
-    .select("jobId")
+    .select("id,jobId, jobs(id,title,companyName,location,averageSalary,image)")
     .eq("seekerId", seekerId);
 
   if (error) throw new Error("Saved jobs could not be retrieved");
 
-  return data.map((row) => row.jobId);
+  // return data.map((row) => row.jobId);
+  return data;
 }
 
 /////////////

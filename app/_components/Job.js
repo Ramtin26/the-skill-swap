@@ -9,6 +9,8 @@ import {
 } from "@heroicons/react/24/solid";
 import { differenceInDays } from "date-fns";
 import GoBackButton from "./GoBackButton";
+import SaveJobButton from "./SaveJobButton";
+import { formatCurrency } from "@/app/helper/helper";
 
 export default function Job({ job }) {
   const {
@@ -30,13 +32,8 @@ export default function Job({ job }) {
   if (daysLeft <= 7) deadlineColor = "bg-red-100 text-red-800";
   else if (daysLeft <= 14) deadlineColor = "bg-orange-100 text-orange-800";
 
-  const formatterUSD = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
-
   return (
-    <article className="bg-primary-900 rounded-2xl shadow-md overflow-hidden mb-24">
+    <article className="bg-primary-900 rounded-2xl shadow-md overflow-hidden mb-20">
       {/* Header / Cover */}
       {/* <div className="relative h-64 w-full"> */}
       <div className="relative aspect-[16/9] w-full">
@@ -65,7 +62,10 @@ export default function Job({ job }) {
 
       {/* Job Header */}
       <div className="p-8 border-b border-primary-700">
-        <h1 className="text-4xl font-semibold mb-2">{title}</h1>
+        <div className="flex gap-4 items-center">
+          <h1 className="text-4xl font-semibold mb-2">{title}</h1>
+          <SaveJobButton jobId={job.id} size={8} />
+        </div>
         <p className="text-lg">{companyName}</p>
       </div>
 
@@ -91,7 +91,7 @@ export default function Job({ job }) {
         <Detail
           icon={<CurrencyDollarIcon />}
           label="Average Salary"
-          value={formatterUSD.format(averageSalary)}
+          value={formatCurrency(averageSalary)}
         />
       </div>
 

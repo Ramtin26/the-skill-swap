@@ -1,11 +1,18 @@
 import { Suspense } from "react";
 import { isBefore } from "date-fns";
 
-import Application from "@/app/_components/Applicaton";
 import Job from "@/app/_components/Job";
 import Spinner from "@/app/_components/Spinner";
 import { auth } from "@/app/_lib/auth";
-import { getJob, getJobs, getUser } from "@/app/_lib/data-service";
+import {
+  getJob,
+  getJobs,
+  getSavedJobs,
+  getUser,
+} from "@/app/_lib/data-service";
+import LoginMessage from "@/app/_components/LoginMessage";
+import ApplicationForm from "@/app/_components/ApplicationForm";
+import { JobsProvider } from "@/app/_components/JobsContext";
 
 export async function generateMetadata({ params }) {
   const { jobId } = await params;
@@ -32,29 +39,34 @@ export default async function Page({ params }) {
 
   const deadlinePassed = isBefore(new Date(job.deadline), new Date());
 
-  const canApply = user?.role === "seeker" && !deadlinePassed;
-
   return (
     <div className="max-w-6xl mx-auto mt-8">
       <Job job={job} />
 
       <div>
-        {canApply ? (
+        {!session ? (
+          // CASE 1: Not logged in
+          <LoginMessage />
+        ) : user?.role !== "seeker" ? (
+          // CASE 2: Logged in but employer
+          <p className="text-5xl font-semibold text-center text-accent-400">
+            Only job seekers can apply for positions!
+          </p>
+        ) : deadlinePassed ? (
+          // CASE 3: Seeker but deadline passed
+          <p className="text-5xl font-semibold text-center text-accent-400">
+            Sorry, the application deadline for this job has passed!
+          </p>
+        ) : (
+          // CASE 4: Seeker + deadline active → show form
           <>
             <h2 className="text-5xl font-semibold text-center mb-10 text-accent-400">
               Ready to make your move?
             </h2>
-
             <Suspense fallback={<Spinner />}>
-              <Application job={job} />
+              <ApplicationForm job={job} user={user} />
             </Suspense>
           </>
-        ) : (
-          <p className="text-5xl font-semibold text-center text-accent-400">
-            {deadlinePassed
-              ? "Sorry, the application deadline for this job has passed!"
-              : "Only job seekers can apply for positions!"}
-          </p>
         )}
       </div>
     </div>

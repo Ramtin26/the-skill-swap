@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth, signIn, signOut } from "./auth";
 import { supabase } from "./supabase";
 import { flagToCountryCode } from "@/app/helper/helper";
-import { getUser } from "./data-service";
+import { getSavedJobs, getUser } from "./data-service";
 
 export async function updateRole(role) {
   const session = await auth();
@@ -80,7 +80,7 @@ export async function updateUser(formData) {
 
   console.log("UpdateData:", updateData);
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("users")
     .update(updateData)
     .eq("id", session.user.seekerId);
@@ -103,6 +103,9 @@ export async function toggleSaveJob({ seekerId, jobId, isSaved }) {
 
     if (error) throw new Error("Could not unsave job");
 
+    revalidatePath("/jobs");
+    revalidatePath(`/jobs/${jobId}`);
+
     return { status: "unsaved" };
   } else {
     const { error } = await supabase
@@ -111,68 +114,193 @@ export async function toggleSaveJob({ seekerId, jobId, isSaved }) {
 
     if (error) throw new Error("Could not save job");
 
+    revalidatePath("/jobs");
+    revalidatePath(`/jobs/${jobId}`);
+
     return { status: "saved" };
   }
 }
 
+export async function deleteSavedjob(savedJobsId) {
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in");
+
+  const seekerSavedJobs = await getSavedJobs(session.user.seekerId);
+  const seekerSavedJobIds = seekerSavedJobs.map((savedJob) => savedJob.id);
+
+  if (!seekerSavedJobIds.includes(savedJobsId))
+    throw new Error("You are not allowed to delete this saved job");
+
+  const { error } = await supabase
+    .from("saved_jobs")
+    .delete()
+    .eq("id", savedJobsId);
+
+  if (error) throw new Error("Saved job could not be deleted");
+
+  revalidatePath("/dashboard");
+}
+
 export async function createApplication(formData) {
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in");
+
   const jobId = formData.get("jobId");
   const seekerId = formData.get("seekerId");
+  const fullName = formData.get("fullName");
   const note = formData.get("note")?.trim();
   const resumeFile = formData.get("resume");
 
   console.log(formData);
 
   if (!jobId || !seekerId) throw new Error("Missing required fields");
+  if (!resumeFile || resumeFile.size === 0)
+    throw new Error("Resume is required");
 
-  // Upload resume
-  let resumeURL = null;
-  if (resumeFile) {
+  try {
+    // Validate file type and size
     if (resumeFile.type !== "application/pdf") {
       throw new Error("Resume must be a PDF file");
     }
 
-    const filePath = `resumes/${seekerId}-${jobId}.pdf`;
+    const maxSize = 10 * 1024 * 1024; // 10MB limit
+    if (resumeFile.size > maxSize) {
+      throw new Error("Resume file must be smaller than 10MB");
+    }
 
-    // const { error: uploadError } = await supabase.storage
-    //   .from("resumes")
-    //   .upload(filePath, resumeFile, { upsert: true });
+    // Check if user already applied for this job
+    const { data: existingApplication } = await supabase
+      .from("applications")
+      .select("id")
+      .eq("jobId", jobId)
+      .eq("seekerId", seekerId)
+      .single();
 
-    // if (uploadError) throw new Error("Resume upload failed");
+    if (existingApplication) {
+      throw new Error("You have already applied for this position");
+    }
 
-    // const {
-    //   data: { publicUrl },
-    // } = supabase.storage.from("resumes").getPublicUrl(filePath);
+    // Create clean filename
+    const cleanName =
+      fullName
+        ?.trim()
+        .replace(/[^a-zA-Z0-9\s]/g, "") // Remove special characters
+        .replace(/\s+/g, "_") // Replace spaces with underscores
+        .substring(0, 50) || // Limit length
+      "Resume";
 
-    // resumeURL = publicUrl;
+    const fileName = `${cleanName}_Resume.pdf`;
+
+    // Structured path: applications/{jobId}/{seekerId}/filename
+    const filePath = `applications/${jobId}/${seekerId}/${fileName}`;
+
+    console.log("Uploading resume to:", filePath);
+
+    // Upload resume with structured path
+    const { error: uploadError } = await supabase.storage
+      .from("resumes")
+      .upload(filePath, resumeFile, {
+        upsert: true, // Overwrite if exists (user updating application)
+        cacheControl: "3600",
+        contentType: "application/pdf",
+      });
+
+    if (uploadError) {
+      console.error("Upload error:", uploadError);
+      throw new Error(`Resume upload failed: ${uploadError.message}`);
+    }
+
+    // Store the file path (not signed URL) in database
+    // We'll generate signed URLs when needed for viewing
+    const { error: insertError } = await supabase.from("applications").insert([
+      {
+        jobId,
+        seekerId,
+        note,
+        resumePath: filePath, // Store file path, not URL
+        status: "in-review",
+        reviewed: false,
+        rating: null,
+      },
+    ]);
+
+    if (insertError) {
+      console.error("Insert error:", insertError);
+
+      // Cleanup: delete uploaded file if database insert fails
+      await supabase.storage.from("resumes").remove([filePath]);
+
+      throw new Error(`Application submission failed: ${insertError.message}`);
+    }
+
+    console.log("Application created successfully for job:", jobId);
+
+    // Revalidate relevant pages
+    revalidatePath(`/jobs/${jobId}`);
+    revalidatePath("/dashboard/applications");
+
+    return {
+      success: true,
+      message: "Application submitted successfully!",
+      filePath,
+    };
+  } catch (error) {
+    console.error("Error in createApplication:", error);
+    throw new Error(error.message || "An unexpected error occurred");
   }
-
-  const data = {
-    jobId,
-    seekerId,
-    note,
-    resumeFile,
-  };
-
-  console.log("Data:", data);
-
-  // Insert into applications table
-  // const { error } = await supabase.from("applications").insert([
-  //   {
-  //     jobId,
-  //     seekerId,
-  //     note,
-  //     resume: resumeURL,
-  //     status: "in-review",
-  //     reviewed: false,
-  //     rating: null,
-  //   },
-  // ]);
-
-  // if (error) throw new Error("Could not create application");
-
-  return { success: true };
 }
+
+// export async function createApplication(formData) {
+//   const jobId = formData.get("jobId");
+//   const seekerId = formData.get("seekerId");
+//   const fullName = formData.get("fullName");
+//   const note = formData.get("note")?.trim();
+//   const resumeFile = formData.get("resume");
+
+//   // console.log(formData);
+
+//   if (!jobId || !seekerId) throw new Error("Missing required fields");
+
+//   // Upload resume
+//   let resumeURL = null;
+//   if (resumeFile) {
+//     if (resumeFile.type !== "application/pdf") {
+//       throw new Error("Resume must be a PDF file");
+//     }
+
+//     const cleanName = fullName?.toLowerCase().replace(/\s+/g, "_") || seekerId;
+//     const filePath = `${cleanName}_${jobId}_cv.pdf`;
+
+//     const { error: uploadError } = await supabase.storage
+//       .from("resumes")
+//       .upload(filePath, resumeFile, { upsert: true });
+
+//     if (uploadError) throw new Error("Resume upload failed");
+
+//     const {
+//       data: { publicUrl },
+//     } = supabase.storage.from("resumes").getPublicUrl(filePath, 60 * 60);
+
+//     resumeURL = publicUrl;
+//   }
+
+//   // Insert into applications table
+//   const { error } = await supabase.from("applications").insert([
+//     {
+//       jobId,
+//       seekerId,
+//       note,
+//       resume: resumeURL,
+//       status: "in-review",
+//       reviewed: false,
+//       rating: null,
+//     },
+//   ]);
+
+//   if (error) throw new Error("Could not create application");
+
+//   return { success: true };
+// }
 
 export async function signInAction() {
   await signIn("google", { redirectTo: "/onboarding/role" });
