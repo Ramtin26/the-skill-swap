@@ -24,6 +24,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   const session = await auth();
+  // FIXME:
   const user = session ? await getUser(session?.user?.email) : null;
   const savedJobIds =
     user?.role === "seeker" ? await getSavedJobs(user.id) : [];
@@ -37,7 +38,10 @@ export default async function RootLayout({ children }) {
         <div className="flex-1 px-8 py-12 grid">
           <main className="max-w-7xl mx-auto w-full">
             <SessionProvider>
-              <JobsProvider initialSavedIds={savedJobIds} seekerId={user.id}>
+              <JobsProvider
+                initialSavedIds={savedJobIds}
+                seekerId={user.role === "seeker" ? user.id : null}
+              >
                 {children}
               </JobsProvider>
             </SessionProvider>

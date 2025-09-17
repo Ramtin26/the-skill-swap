@@ -23,50 +23,61 @@ export async function getJob(id) {
 }
 
 export async function getJobs() {
-  try {
-    const { data, error } = await supabase
-      .from("jobs")
-      .select("id, title, locationType, maxHires, deadline, image", {
-        head: false,
-      })
-      .order("title");
+  // try {
+  const { data, error } = await supabase
+    .from("jobs")
+    .select("id, title, locationType, maxHires, deadline, image", {
+      head: false,
+    })
+    .order("title");
 
-    if (error) {
-      console.error("getJobs error:", error);
-      throw new Error("Jobs could not be loaded");
-    }
-
-    return data;
-  } catch (err) {
-    console.error("💥 getJobs failed:", err);
-    throw err; // Let Next.js handle it or catch higher up
+  if (error) {
+    console.error("getJobs error:", error);
+    throw new Error("Jobs could not be loaded");
   }
+
+  return data;
+  // } catch (err) {
+  //   console.error("💥 getJobs failed:", err);
+  //   throw err; // Let Next.js handle it or catch higher up
+  // }
+}
+
+export async function getPostedJobs(employerId) {
+  const { data, error } = await supabase
+    .from("jobs")
+    .select("*")
+    .eq("employerId", employerId);
+
+  if (error) throw new Error("Posted jobs could not be retrieved");
+
+  return data;
 }
 
 export async function getUser(email) {
-  try {
-    const { data, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("email", email)
-      .single();
+  // try {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("email", email)
+    .single();
 
-    if (error) {
-      // Supabase "row not found" = PGRST116
-      if (error.code === "PGRST116") {
-        console.warn(`⚠️ No user found for email: ${email}`);
-        return null; // safer than throwing
-      }
-
-      console.error("getUser error:", error);
-      throw new Error(`User could not be loaded: ${error.message}`);
+  if (error) {
+    // Supabase "row not found" = PGRST116
+    if (error.code === "PGRST116") {
+      console.warn(`⚠️ No user found for email: ${email}`);
+      return null; // safer than throwing
     }
 
-    return data;
-  } catch (err) {
-    console.error("💥 getUser failed:", err);
-    throw err;
+    console.error("getUser error:", error);
+    throw new Error(`User could not be loaded: ${error.message}`);
   }
+
+  return data;
+  // } catch (err) {
+  //   console.error("💥 getUser failed:", err);
+  //   throw err;
+  // }
 }
 
 export async function getCountries() {
@@ -92,6 +103,83 @@ export async function getSavedJobs(seekerId) {
 
   // return data.map((row) => row.jobId);
   return data;
+}
+
+export async function getApplication(id) {
+  const { data, error } = await supabase
+    .from("applications")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error("Application could not get loaded");
+  }
+
+  return data;
+}
+
+export async function getAllApplications() {
+  const { data, error } = await supabase
+    .from("applications")
+    .select("id, status, note, jobs(id,title)");
+
+  if (error) throw new Error("All applications could not get loaded");
+
+  return data;
+}
+
+export async function getApplications(seekerId) {
+  const { data, error } = await supabase
+    .from("applications")
+    .select(
+      "id, created_at, resumePath, status, note, rating, jobs(id,title, companyName, image, locationType, positionLevel, averageSalary, deadline)"
+    )
+    .eq("seekerId", seekerId);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Applications could not get loaded");
+  }
+
+  return data;
+}
+
+export async function getApplicationsForEmployers(employerId) {
+  // 1. Get all job IDs for this employer
+  const { data: jobs, error: jobsError } = await supabase
+    .from("jobs")
+    .select("id")
+    .eq("employerId", employerId);
+
+  if (jobsError) throw new Error("Jobs could not be retrieved");
+
+  const jobIds = jobs.map((job) => job.id);
+  if (jobIds.length === 0) return []; // employer has no jobs
+
+  // console.log("jobs:", jobs);
+  // console.log("Job IDs: ", jobIds);
+
+  // 2. Get applications for those jobs
+  const { data: applications, error: appsError } = await supabase
+    .from("applications")
+    .select(
+      `id, created_at, status, rating, resumeURL,
+       jobs (id, title, companyName, maxHires),
+       users (id, fullName)`
+    )
+    .in("jobId", jobIds);
+  // const { data: applications, error: appsError } = await supabase
+  //   .from("applications")
+  //   .select("jobId")
+  //   .in("jobId", jobIds);
+
+  console.log(applications);
+
+  if (appsError) throw new Error("Applications could not be retrieved");
+
+  return applications ?? [];
 }
 
 /////////////

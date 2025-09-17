@@ -29,7 +29,15 @@ export default function Page() {
     </main>
   );
 }
+// NEXT_PUBLIC_SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6emNjbXF0a25lb29zcXh2dm9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM2OTg4NTEsImV4cCI6MjA2OTI3NDg1MX0.Dhvp7VnjlTKZMUSk16Z0KQncLBSBD94RSEN6_VMLV-E
 
-// MUST ASK AT THE END
+// MUST ASK AT THE END FIXME:
+// 1) All components should be responsive and compatible with mobile phones
+// 2) the seeker id in the session object should be modified. (change to id or use role property with getUser to get the id)
+// 3) saving job is broken
+// 4) showing/implementing average rating in seeker side/dashboard
+// 5) getUser and getJobs/getJob in data-service are broken when HMR or hard-reload happens often
+// 6) Test applying, edit application, delete application and accept and reject functionalities
 
-// All components should be responsive and compatible with mobile phones
+// great, it looks nice.
+// perfect, the application is done feature-wise. we've implemented all the features and whatnot. However, it's not officially finished, because there are some bugs, issues and some other things to consider left

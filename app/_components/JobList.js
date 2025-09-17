@@ -1,8 +1,9 @@
-import { getJobs } from "../_lib/data-service";
+import { getJobs } from "@/app/_lib/data-service";
 import JobCard from "./JobCard";
 
 async function JobList({ filter }) {
   const jobs = await getJobs();
+  // console.log(jobs);
 
   if (!jobs.length) return null;
 

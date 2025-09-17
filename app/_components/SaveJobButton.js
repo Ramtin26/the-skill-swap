@@ -12,7 +12,7 @@ function SaveJobButton({ jobId, size = 5 }) {
 
   return (
     <button
-      className="cursor-pointer"
+      className="cursor-pointer mr-7"
       onClick={() => toggleJob(jobId)}
       disabled={isPending}
     >

@@ -6,10 +6,12 @@ import { format } from "date-fns";
 import { SubmitButton } from "./SubmitButton";
 import { createApplication } from "@/app/_lib/actions";
 
-function ApplicationForm({ job, user }) {
-  const [fileName, setFileName] = useState();
-  console.log("Job:", job);
-  console.log("user:", user);
+function ApplicationForm({ job, user, resumePath, note }) {
+  const [fileName, setFileName] = useState(
+    resumePath ? resumePath.split("/").pop() : null
+  );
+  // console.log("Job:", job);
+  // console.log("user:", user);
 
   return (
     <form
@@ -71,6 +73,7 @@ function ApplicationForm({ job, user }) {
           rows={4}
           maxLength={500}
           required
+          defaultValue={note || ""}
           placeholder="Why are you a great fit for this role?"
           className="w-full px-4 py-3 rounded-md bg-primary-200 text-primary-800 placeholder-primary-500"
         />

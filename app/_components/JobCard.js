@@ -53,13 +53,15 @@ function JobCard({ job }) {
           >
             Deadline: {format(new Date(deadline), "EEE, MMM dd yyyy")}
           </p>
-          <Link
-            href={`/jobs/${jobId}`}
-            className="border-l border-primary-800 py-4 px-3 hover:bg-accent-600 transition-all hover:text-primary-900 inline-flex items-center gap-2"
-          >
-            <span className="text-nowrap">Apply Now</span>
-            <span>→</span>
-          </Link>
+          {maxHires !== 0 && (
+            <Link
+              href={`/jobs/${jobId}`}
+              className="border-l border-primary-800 py-4 px-3 hover:bg-accent-600 transition-all hover:text-primary-900 inline-flex items-center gap-2"
+            >
+              <span className="text-nowrap">Apply Now</span>
+              <span>→</span>
+            </Link>
+          )}
         </div>
       </div>
     </div>

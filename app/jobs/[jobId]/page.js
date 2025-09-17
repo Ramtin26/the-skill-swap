@@ -5,6 +5,8 @@ import Job from "@/app/_components/Job";
 import Spinner from "@/app/_components/Spinner";
 import { auth } from "@/app/_lib/auth";
 import {
+  getAllApplications,
+  getApplications,
   getJob,
   getJobs,
   getSavedJobs,
@@ -12,7 +14,6 @@ import {
 } from "@/app/_lib/data-service";
 import LoginMessage from "@/app/_components/LoginMessage";
 import ApplicationForm from "@/app/_components/ApplicationForm";
-import { JobsProvider } from "@/app/_components/JobsContext";
 
 export async function generateMetadata({ params }) {
   const { jobId } = await params;
@@ -36,8 +37,25 @@ export default async function Page({ params }) {
 
   const session = await auth();
   const user = session ? await getUser(session?.user?.email) : null;
-
+  const applications = await getApplications(user.id);
+  const applicationsForThisJob = applications.find(
+    (app) => app.jobs.id === jobId
+  );
   const deadlinePassed = isBefore(new Date(job.deadline), new Date());
+
+  const allApplications = await getAllApplications(); // fetch all apps, not just by this user
+  const applicationsForThisJobAll = allApplications.filter(
+    (app) => app.jobs.id === jobId
+  );
+  const hiresReached =
+    job.maxHires && applicationsForThisJobAll.length >= job.maxHires;
+
+  console.log(applicationsForThisJobAll);
+  // console.log(hiresReached);
+
+  // console.log(job.maxHires);
+  // console.log(applications);
+  // console.log(applicationsForThisJob);
 
   return (
     <div className="max-w-6xl mx-auto mt-8">
@@ -57,6 +75,10 @@ export default async function Page({ params }) {
           <p className="text-5xl font-semibold text-center text-accent-400">
             Sorry, the application deadline for this job has passed!
           </p>
+        ) : hiresReached ? (
+          <p className="text-5xl font-semibold text-center text-accent-400">
+            This position has already reached the maximum number of hires!
+          </p>
         ) : (
           // CASE 4: Seeker + deadline active → show form
           <>
@@ -64,7 +86,12 @@ export default async function Page({ params }) {
               Ready to make your move?
             </h2>
             <Suspense fallback={<Spinner />}>
-              <ApplicationForm job={job} user={user} />
+              <ApplicationForm
+                job={job}
+                user={user}
+                resumePath={applicationsForThisJob?.resumePath}
+                note={applicationsForThisJob?.note}
+              />
             </Suspense>
           </>
         )}
