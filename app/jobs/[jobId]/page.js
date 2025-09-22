@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { isBefore } from "date-fns";
+import { isAfter, isBefore } from "date-fns";
 
 import Job from "@/app/_components/Job";
 import Spinner from "@/app/_components/Spinner";
@@ -41,7 +41,14 @@ export default async function Page({ params }) {
   const applicationsForThisJob = applications.find(
     (app) => app.jobs.id === jobId
   );
-  const deadlinePassed = isBefore(new Date(job.deadline), new Date());
+
+  const deadlineDate = new Date(job.deadline); // stays the exact instant in UTC
+  const now = new Date();
+
+  const deadlinePassed = isAfter(now, deadlineDate); // true only when NOW > deadline
+
+  // const deadlinePassed = isBefore(new Date(job.deadline), new Date());
+  // console.log(deadlinePassed);
 
   const allApplications = await getAllApplications(); // fetch all apps, not just by this user
   const applicationsForThisJobAll = allApplications.filter(
@@ -50,7 +57,7 @@ export default async function Page({ params }) {
   const hiresReached =
     job.maxHires && applicationsForThisJobAll.length >= job.maxHires;
 
-  console.log(applicationsForThisJobAll);
+  // console.log(applicationsForThisJobAll);
   // console.log(hiresReached);
 
   // console.log(job.maxHires);

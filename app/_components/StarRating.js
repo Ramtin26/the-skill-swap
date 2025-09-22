@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function StarRating({
   maxRating = 5,
@@ -18,7 +18,7 @@ function StarRating({
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1 bg-primary-900/80 p-2 rounded-lg">
       <div className="flex">
         {Array.from({ length: maxRating }, (_, i) => {
           const value = i + 1;

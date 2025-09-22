@@ -7,7 +7,7 @@ import {
   BuildingOfficeIcon,
   MapPinIcon,
 } from "@heroicons/react/24/solid";
-import { differenceInDays } from "date-fns";
+import { differenceInDays, differenceInHours } from "date-fns";
 import GoBackButton from "./GoBackButton";
 import SaveJobButton from "./SaveJobButton";
 import { formatCurrency } from "@/app/helper/helper";
@@ -27,10 +27,26 @@ export default function Job({ job }) {
     deadline,
   } = job;
 
-  const daysLeft = differenceInDays(new Date(deadline), new Date());
-  let deadlineColor = "bg-green-100 text-green-800";
-  if (daysLeft <= 7) deadlineColor = "bg-red-100 text-red-800";
-  else if (daysLeft <= 14) deadlineColor = "bg-orange-100 text-orange-800";
+  const deadlineDate = new Date(deadline);
+  const now = new Date();
+
+  const hoursLeft = differenceInHours(deadlineDate, now);
+  const daysLeft = differenceInDays(deadlineDate, now);
+
+  let deadlineText;
+  if (hoursLeft <= 0) {
+    deadlineText = "Deadline passed";
+  } else if (daysLeft >= 1) {
+    deadlineText = `Deadline in ${daysLeft} day${daysLeft > 1 ? "s" : ""}`;
+  } else {
+    deadlineText = `Deadline in ${hoursLeft} hour${hoursLeft > 1 ? "s" : ""}`;
+  }
+
+  let deadlineColor;
+  if (hoursLeft <= 0) deadlineColor = "bg-gray-200 text-gray-800"; // passed
+  else if (hoursLeft <= 24) deadlineColor = "bg-red-100 text-red-800"; // < 24h
+  else if (daysLeft <= 7) deadlineColor = "bg-orange-100 text-orange-800";
+  else deadlineColor = "bg-green-100 text-green-800";
 
   return (
     <article className="bg-primary-900 rounded-2xl shadow-md overflow-hidden mb-20">
@@ -100,9 +116,7 @@ export default function Job({ job }) {
         <span
           className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${deadlineColor}`}
         >
-          {daysLeft > 0
-            ? `Deadline in ${daysLeft} day${daysLeft > 1 ? "s" : ""}`
-            : "Deadline passed"}
+          {deadlineText}
         </span>
       </div>
 

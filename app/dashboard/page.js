@@ -16,12 +16,10 @@ export default async function Page() {
   const user = await getUser(session?.user?.email);
   const savedJobs = (await getSavedJobs(user.id)) ?? [];
 
-  // const employerApplications =
-  //   user.role === "employer"
-  //     ? await getApplicationsForEmployers(user.id)
-  //     : null;
-
-  // console.log("Employer Application", employerApplications);
+  const employerApplications =
+    user.role === "employer"
+      ? await getApplicationsForEmployers(session.user.seekerId)
+      : null;
 
   console.log("Session: ", session);
   const firstName = user.fullName?.split(" ").at(0);
@@ -35,7 +33,7 @@ export default async function Page() {
       {user.role === "seeker" ? (
         <SeekerDashboard savedJobs={savedJobs} />
       ) : (
-        <EmployerDashboard />
+        <EmployerDashboard applications={employerApplications} />
       )}
     </div>
   );

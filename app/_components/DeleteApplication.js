@@ -8,7 +8,11 @@ function DeleteApplication({ applicationId, onDelete }) {
   const [isPending, startTransition] = useTransition();
 
   function handleDelete() {
-    if (confirm("Are you sure you want to cancel your application?"))
+    if (
+      confirm(
+        "Are you sure you want to cancel your application? It's undoable!"
+      )
+    )
       startTransition(() => onDelete(applicationId));
   }
 

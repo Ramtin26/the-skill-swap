@@ -34,7 +34,7 @@ export async function updateRole(role) {
 export async function updateUser(formData) {
   const session = await auth();
   // const user = await getUser(session.user.email);
-  console.log("FormData:", formData);
+  // console.log("FormData:", formData);
 
   if (!session) throw new Error("You must be logged in");
 
@@ -341,48 +341,105 @@ export async function deleteApplication(applicationId) {
   const session = await auth();
   if (!session) throw new Error("You must be logged in");
 
-  const userApplications = await getApplications(session.user.seekerId);
-  const userApplicationIds = userApplications.map(
-    (application) => application.id
-  );
+  // const userApplications = await getApplications(session.user.seekerId);
+  // const userApplicationIds = userApplications.map(
+  //   (application) => application.id
+  // );
 
-  if (!userApplicationIds.includes(applicationId))
+  // if (!userApplicationIds.includes(applicationId))
+  //   throw new Error("You are not allowed to delete this application");
+
+  // Get the application to retrieve its resumePath
+  const { data: application, error: fetchError } = await supabase
+    .from("applications")
+    .select("id, seekerId, resumePath")
+    .eq("id", applicationId)
+    .single();
+
+  if (fetchError || !application) {
+    throw new Error("Application not found");
+  }
+
+  // Make sure it belongs to the current user
+  if (application.seekerId !== session.user.seekerId) {
     throw new Error("You are not allowed to delete this application");
+  }
+
+  // Delete the file from storage first
+  if (application.resumePath) {
+    const { error: storageError } = await supabase.storage
+      .from("resumes")
+      .remove([application.resumePath]);
+
+    if (storageError) {
+      console.error("Resume removal failed:", storageError.message);
+      // not throwing here — let DB delete continue
+    }
+  }
 
   const { error } = await supabase
     .from("applications")
     .delete()
     .eq("id", applicationId);
 
+  // For testing
+  await new Promise((res) => setTimeout(res, 3000));
+
   if (error) throw new Error("Application could not be deleted");
 
   revalidatePath("/dashboard/applications");
+}
+
+export async function getAverageRating(seekerId) {
+  const { data, error } = await supabase
+    .from("applications")
+    .select("rating")
+    .eq("seekerId", seekerId)
+    .not("rating", "is", null);
+
+  if (error) throw new Error(error.message);
+
+  if (!data.length) return 0; // no ratings yet
+
+  const avg = data.reduce((sum, row) => sum + row.rating, 0) / data.length;
+
+  return Number(avg.toFixed(1)); // e.g. 3.5
 }
 
 export async function updateRating({ applicationId, rating }) {
   const session = await auth();
   if (!session) throw new Error("You must be logged in");
 
-  // 2) Authorization
-  const employerApplications = await getApplications(session.user.seekerId);
-  const userApplicationIds = employerApplications.map(
-    (application) => application.id
-  );
+  // ✅ 1) Get jobId + employerId for this application
+  const { data: appData, error: appError } = await supabase
+    .from("applications")
+    .select("seekerId ,jobId, jobs!inner(employerId)")
+    .eq("id", applicationId)
+    .single();
 
-  if (!userApplicationIds.includes(applicationId))
+  if (appError || !appData)
+    throw new Error("Application not found or failed to fetch job info");
+
+  const { seekerId, jobs } = appData;
+  const employerId = jobs?.employerId;
+
+  // ✅ 2) Auth check: only the job's employer can rate
+  if (employerId !== session.user.seekerId) {
     throw new Error("You are not allowed to update this rating");
-
-  // console.log(applicationId, rating);
+  }
 
   const { error } = await supabase
     .from("applications")
     .update({ rating })
     .eq("id", applicationId); // target the right application
 
-  if (error) {
-    console.error("Error updating rating:", error.message);
-    throw new Error("Could not update rating");
-  }
+  if (error) throw new Error("Could not update rating");
+
+  // ➡️ return fresh average
+  const avg = await getAverageRating(seekerId);
+
+  revalidatePath("/dashboard");
+  return avg;
 }
 
 export async function updateStatus({ applicationId, status }) {
@@ -424,6 +481,8 @@ export async function updateMaxHires({ jobId }) {
     console.error("Error updating maxHires:", updateError.message);
     throw new Error("Could not update maxHires");
   }
+
+  revalidatePath("/dashboard");
 }
 
 export async function getResumeSignedURL({ resumePath }) {
@@ -560,6 +619,7 @@ export async function getResumeSignedURL({ resumePath }) {
 // }
 
 export async function createUpdateJob(formData) {
+  const session = await auth();
   console.log(formData);
   const jobId = formData.get("id"); // null for new job
   const title = formData.get("title")?.trim();
@@ -575,7 +635,7 @@ export async function createUpdateJob(formData) {
   const deadline = deadlineInput ? new Date(deadlineInput).toISOString() : null;
   const description = formData.get("description")?.trim();
   const imageFile = formData.get("image");
-  const employerId = formData.get("employerId");
+  const employerId = session.user.seekerId;
 
   // Guard for valid file
   const hasValidFile =
@@ -713,6 +773,9 @@ export async function deletePostedJob(jobId) {
   }
 
   const { error } = await supabase.from("jobs").delete().eq("id", jobId);
+
+  // For testing
+  await new Promise((res) => setTimeout(res, 3000));
 
   if (error) throw new Error("The job could not be deleted");
 

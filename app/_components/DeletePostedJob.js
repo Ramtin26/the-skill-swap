@@ -8,7 +8,7 @@ function DeletePostedJob({ jobId, onDelete }) {
   const [isPending, startTransition] = useTransition();
 
   function handleDelete() {
-    if (confirm("Are you sure you want to delete your job?"))
+    if (confirm("Are you sure you want to delete your job? It's undoable!"))
       startTransition(() => onDelete(jobId));
   }
   return (

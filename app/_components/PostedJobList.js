@@ -14,8 +14,6 @@ function PostedJobList({ postedJobs }) {
     (curPostedJobs, action) => {
       if (typeof action === "object" && action.deleting) {
         // Mark the job as deleting
-        console.log("Action:", action);
-        console.log("Current posted job:", curPostedJobs);
         return curPostedJobs.map((job) =>
           job.id === action.id ? { ...job, deleting: true } : job
         );
@@ -27,8 +25,6 @@ function PostedJobList({ postedJobs }) {
 
   async function handleDelete(jobId) {
     // optimisticDelete(jobId);
-    // FIXME:
-    console.log("JobID:", jobId);
     optimisticDelete({ id: jobId, deleting: true });
     await deletePostedJob(jobId);
     optimisticDelete(jobId);
@@ -45,12 +41,16 @@ function PostedJobList({ postedJobs }) {
       ))} */}
       {optimisticPostedJobs.map((postedJob) =>
         postedJob.deleting ? (
-          <li
-            key={postedJob.id}
-            className="mb-6 bg-primary-900 rounded-2xl text-center p-5 flex gap-2 justify-center items-center h-40 text-primary-400"
-          >
-            <SpinnerMini /> Deleting job...
-          </li>
+          // <li
+          //   key={postedJob.id}
+          //   className="mb-6 bg-primary-900 rounded-2xl text-center p-5 flex gap-2 justify-center items-center h-40 text-primary-400"
+          // >
+          //   <SpinnerMini /> Deleting job...
+          // </li>
+          <div key={postedJob.id} className="grid items-center justify-center">
+            <SpinnerMini />
+            <p className="text-xl text-primary-200">Deleting job...</p>
+          </div>
         ) : (
           <PostedjobCard
             postedJob={postedJob}

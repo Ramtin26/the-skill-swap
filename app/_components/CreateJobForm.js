@@ -5,7 +5,7 @@ import { DocumentArrowUpIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { SubmitButton } from "./SubmitButton";
 import { createUpdateJob } from "@/app/_lib/actions";
 
-function CreateJobForm({ employerId, job, onClose }) {
+function CreateJobForm({ job, onClose }) {
   const [isOpen, setIsOpen] = useState(false);
   const [fileName, setFileName] = useState(null);
 
@@ -222,7 +222,7 @@ function CreateJobForm({ employerId, job, onClose }) {
               </div>
 
               {/* Hidden */}
-              <input type="hidden" name="employerId" value={employerId} />
+              {/* <input type="hidden" name="employerId" value={employerId} /> */}
               {isEdit && <input type="hidden" name="id" value={job.id} />}
 
               {/* Submit */}

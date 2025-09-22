@@ -165,19 +165,34 @@ export async function getApplicationsForEmployers(employerId) {
   const { data: applications, error: appsError } = await supabase
     .from("applications")
     .select(
-      `id, created_at, status, rating, resumeURL,
-       jobs (id, title, companyName, maxHires),
-       users (id, fullName)`
+      `
+      id,
+      created_at,
+      status,
+      rating,
+      resumePath,
+      jobs:jobId (id, title, companyName, maxHires),
+      users:seekerId (id, fullName)
+    `
     )
     .in("jobId", jobIds);
-  // const { data: applications, error: appsError } = await supabase
-  //   .from("applications")
-  //   .select("jobId")
-  //   .in("jobId", jobIds);
 
-  console.log(applications);
+  // console.log("Applications:", applications);
 
   if (appsError) throw new Error("Applications could not be retrieved");
+
+  // 2) get applications for these job ids (simple select)
+  // const { data: applications, error: appsError } = await supabase
+  //   .from("applications")
+  //   .select("id, created_at, status, rating, resumePath, jobId, seekerId")
+  //   .in("jobId", jobIds);
+
+  // console.log(applications);
+
+  // if (appsError) {
+  //   console.error("getApplicationsForEmployers: appsError", appsError);
+  //   throw new Error("Applications could not be retrieved");
+  // }
 
   return applications ?? [];
 }

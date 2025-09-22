@@ -40,7 +40,7 @@ export default async function RootLayout({ children }) {
             <SessionProvider>
               <JobsProvider
                 initialSavedIds={savedJobIds}
-                seekerId={user.role === "seeker" ? user.id : null}
+                seekerId={user?.role === "seeker" ? user.id : null}
               >
                 {children}
               </JobsProvider>
