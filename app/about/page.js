@@ -9,13 +9,13 @@ export const metadata = {
 
 export default function Page() {
   return (
-    <div className="grid grid-cols-5 gap-x-24 gap-y-32 text-lg items-center">
-      <div className="col-span-3">
-        <h1 className="text-4xl mb-10 text-accent-400 font-medium">
+    <div className="grid gap-y-16 gap-x-10 p-4 sm:p-6 md:p-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-5 text-base sm:text-lg items-center">
+      <div className="lg:col-span-3 space-y-6">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl mb-6 sm:mb-8 text-accent-400 font-medium">
           Welcome to the Skill Swap
         </h1>
 
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8 text-primary-200">
           <p>
             SkillSwap is a modern job marketplace designed to bridge the gap
             between talented professionals and forward-thinking employers.
@@ -39,30 +39,32 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="col-span-2">
+      <div className="lg:col-span-2">
         <Image
           src={image1}
-          alt="an office in the middle of a city"
+          alt="Modern office in a city"
           placeholder="blur"
           quality={80}
+          className="w-full h-auto rounded-lg"
         />
       </div>
 
-      <div className="col-span-2">
+      <div className="lg:col-span-2">
         <Image
           src={image2}
+          alt="employees taking a selfie outside an office"
           placeholder="blur"
           quality={80}
-          alt="employees taking a selfie"
+          className="w-full h-auto rounded-lg"
         />
       </div>
 
-      <div className="col-span-3">
-        <h1 className="text-4xl mb-10 text-accent-400 font-medium">
+      <div className="lg:col-span-3 space-y-6">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl mb-6 sm:mb-8 text-accent-400 font-medium">
           The Vision Behind the Platform
         </h1>
 
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8 text-primary-200">
           <p>
             The vision behind SkillSwap is rooted in the belief that
             opportunities should be accessible, and talent should never go
@@ -81,7 +83,7 @@ export default function Page() {
           <div>
             <Link
               href="/jobs"
-              className="inline-block mt-4 bg-accent-500 px-8 py-5 text-primary-800 text-lg font-semibold hover:bg-accent-600 transition-all"
+              className="inline-block mt-4 bg-accent-500 px-6 sm:px-8 py-3 sm:py-4 text-primary-800 text-base sm:text-lg font-semibold  hover:bg-accent-600 transition-colors rounded-lg cursor-pointer"
             >
               Explore our professional app
             </Link>

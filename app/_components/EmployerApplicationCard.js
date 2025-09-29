@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { CheckIcon, StarIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { format } from "date-fns";
 
-import StarRating from "./StarRating";
 import {
   updateMaxHires,
   updateRating,
@@ -12,6 +11,7 @@ import {
   getAverageRating,
 } from "@/app/_lib/actions";
 
+import StarRating from "./StarRating";
 import DownloadResumeButton from "./DownloadResumeButton";
 import EvaluateButton from "./EvaluateButton";
 
@@ -20,17 +20,14 @@ function EmployerApplicationCard({ application }) {
     application;
 
   const [showRating, setShowRating] = useState(rating !== null);
-  const [currentStatus, setCurrentStatus] = useState(status);
+  const [currentStatus, setCurrentStatus] = useState(status ?? "in-review");
   const [averageRating, setAverageRating] = useState(null);
   const [errorMesg, setErrorMesg] = useState("");
 
-  // console.log(application);
-
-  // 🔹 Fetch the seeker’s average when the card mounts
   useEffect(() => {
     async function fetchAvg() {
       try {
-        const avg = await getAverageRating(users.id); // seekerId is users.id
+        const avg = await getAverageRating(users.id);
         setAverageRating(avg);
       } catch (err) {
         console.error("Failed to load avg rating", err);
@@ -40,10 +37,8 @@ function EmployerApplicationCard({ application }) {
   }, [users.id]);
 
   async function handleRatingChange(newRating) {
-    // update rating for this specific application
     await updateRating({ applicationId: id, rating: newRating });
 
-    // 🔹 refresh the seeker’s overall average after update
     const newAvg = await getAverageRating(users.id);
     setShowRating(true);
     setAverageRating(newAvg);
@@ -52,6 +47,7 @@ function EmployerApplicationCard({ application }) {
   async function handleAccept() {
     if (jobs.maxHires < 1) {
       setErrorMesg("No capacity is left for this job");
+      return;
     }
 
     await updateStatus({ applicationId: id, status: "accepted" });
@@ -68,29 +64,35 @@ function EmployerApplicationCard({ application }) {
     currentStatus === "accepted" || currentStatus === "rejected";
 
   return (
-    <li className="grid grid-cols-[1fr_auto] grid-rows-[auto_auto] gap-x-6 gap-y-3 items-center py-4 border-b border-primary-700">
+    <li className="grid grid-cols-1 sm:grid-cols-[1fr_auto] sm:grid-rows-[auto_auto] gap-3 sm:gap-x-6 sm:gap-y-3 items-center py-4">
       {/* LEFT COLUMN – job info spans both main rows */}
       <div className="space-y-1 col-start-1 row-span-2">
-        <h4 className="font-semibold">{jobs.title}</h4>
+        <h4 className="font-semibold text-sm sm:text-base md:text-lg">
+          {jobs.title}
+        </h4>
         <p className="text-sm text-primary-300">{jobs.companyName}</p>
-        <span className="text-sm text-primary-300 flex flex-col gap-1">
-          Remaining Capacity: {jobs.maxHires}
+        <div className="text-sm text-primary-300 flex flex-col gap-1">
+          <span>Remaining Capacity: {jobs.maxHires}</span>
           {errorMesg && (
             <p className="text-xs text-red-400 font-medium">{errorMesg}</p>
           )}
-        </span>
+        </div>
 
-        <p className="text-xs text-primary-400 flex items-center gap-1 relative group">
+        <p className="text-xs sm:text-sm text-nowrap text-primary-400 flex items-center gap-1">
           Applied by <strong>{users.fullName}</strong>
+          {/* hover tooltip */}
           {averageRating !== null && (
-            <span className="text-primary-400 cursor-pointer relative">
-              <StarIcon className="h-3 w-3 text-yellow-400" />
-              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 whitespace-nowrap rounded-md bg-primary-800 px-2 py-1 text-xs text-primary-100 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+            <span
+              title={`Avg rating: ${averageRating}/5`}
+              className="relative group flex items-center cursor-pointer"
+            >
+              <StarIcon className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400" />
+              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 whitespace-nowrap rounded-md bg-primary-800 text-primary-100 px-2 py-1 text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-150">
                 Avg rating: {averageRating}/5
               </span>
             </span>
           )}
-          on {format(new Date(created_at), "EEE, MMM dd yyyy, p")}
+          <span>On {format(new Date(created_at), "EEE, MMM dd yyyy, p")}</span>
         </p>
       </div>
 
@@ -112,7 +114,7 @@ function EmployerApplicationCard({ application }) {
         ) : (
           <button
             onClick={() => setShowRating(true)}
-            className="text-sm text-accent-400 hover:underline cursor-pointer"
+            className="text-sm sm:text-sm text-accent-400 hover:underline cursor-pointer"
           >
             Wanna rate this applicant?
           </button>
@@ -120,9 +122,9 @@ function EmployerApplicationCard({ application }) {
       </div>
 
       {/* RIGHT COL – row 2: status + evaluate */}
-      <div className="flex justify-end items-center gap-3 col-start-2 row-start-2">
+      <div className="flex justify-end items-center gap-2 sm:gap-3 col-start-2 row-start-2">
         <span
-          className={`px-2 py-1 rounded-lg text-xs font-medium
+          className={`px-2 py-1 rounded-lg text-xs sm:text-sm font-medium
       ${currentStatus === "accepted" ? "bg-green-700 text-green-200" : ""}
       ${currentStatus === "rejected" ? "bg-red-700 text-red-200" : ""}
       ${
@@ -135,20 +137,20 @@ function EmployerApplicationCard({ application }) {
         {!decisionMade && (
           <>
             <EvaluateButton
-              onStatus={setCurrentStatus}
               handleEvaluate={handleAccept}
               disabled={jobs.maxHires < 1}
               style="text-green-400 border-green-500 hover:bg-green-600/20"
             >
-              <CheckIcon className="h-4 w-4" /> Accept
+              <CheckIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="hidden sm:inline">Accept</span>
             </EvaluateButton>
 
             <EvaluateButton
-              onStatus={setCurrentStatus}
               handleEvaluate={handleReject}
               style="text-red-400 border-red-500 hover:bg-red-600/20"
             >
-              <XMarkIcon className="h-4 w-4" /> Reject
+              <XMarkIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="hidden sm:inline">Reject</span>
             </EvaluateButton>
           </>
         )}

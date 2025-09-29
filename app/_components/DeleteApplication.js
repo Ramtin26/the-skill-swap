@@ -1,7 +1,7 @@
 "use client";
 
-import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useTransition } from "react";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 import SpinnerMini from "./SpinnerMini";
 
 function DeleteApplication({ applicationId, onDelete }) {
@@ -19,11 +19,11 @@ function DeleteApplication({ applicationId, onDelete }) {
   return (
     <button
       onClick={handleDelete}
-      className="group flex items-center gap-2 p-2 rounded-lg uppercase text-xs font-bold text-primary-300 px-3 hover:bg-accent-600 transition-colors hover:text-primary-900 cursor-pointer"
+      className="group flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md uppercase text-[0.7rem] sm:text-xs font-bold text-primary-300 hover:bg-accent-600 transition-colors hover:text-primary-900 disabled:opacity-50 cursor-pointer"
     >
       {!isPending ? (
         <>
-          <XMarkIcon className="h-5 w-5 text-primary-600 group-hover:text-primary-800 transition-colors" />
+          <XMarkIcon className="h-4 w-4 sm:h-5 sm:w-5 text-primary-600 group-hover:text-primary-800 transition-colors" />
           <span>Cancel</span>
         </>
       ) : (

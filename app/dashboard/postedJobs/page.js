@@ -9,23 +9,25 @@ export const metadata = {
 
 export default async function Page() {
   const session = await auth();
-  const postedJobs = await getPostedJobs(session.user.seekerId);
+  const postedJobs = await getPostedJobs(session.user.id);
 
   return (
     <div className="space-y-8">
       <section>
-        <h2 className="font-semibold text-2xl text-accent-400 mb-7">
+        <h2 className="font-semibold text-2xl sm:text-3xl text-accent-400 mb-7">
           Your posted jobs
         </h2>
 
         {postedJobs.length === 0 ? (
-          <div className="flex gap-2 items-center">
+          <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-start">
             <p>You have not posted any jobs yet. Post a job now &rarr;</p>
             <CreateJobForm />
           </div>
         ) : (
           <>
-            <PostedJobList postedJobs={postedJobs} />
+            <div className="mb-6">
+              <PostedJobList postedJobs={postedJobs} />
+            </div>
             <CreateJobForm />
           </>
         )}

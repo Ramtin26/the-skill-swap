@@ -1,32 +1,38 @@
 "use client";
 
-import { createContext, useContext, useState, useTransition } from "react";
-import { toggleSaveJob } from "../_lib/actions";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useTransition,
+} from "react";
+import { toggleSaveJob } from "@/app/_lib/actions";
 
 const JobsContext = createContext();
 
-export function JobsProvider({ initialSavedIds, children, seekerId }) {
-  const [savedJobs, setSavedJobs] = useState(initialSavedIds || []);
+export function JobsProvider({ children, seekerId }) {
+  const [savedJobs, setSavedJobs] = useState([]);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (!seekerId) return;
+    fetch("/api/saved-jobs")
+      .then((res) => res.json())
+      .then((ids) => setSavedJobs(ids))
+      .catch((err) => console.error("fetch saved jobs failed", err));
+  }, [seekerId]);
 
   function toggleJob(jobId) {
     const currentlySaved = savedJobs.includes(jobId);
-
-    // Optimistic update
     setSavedJobs((prev) =>
       currentlySaved ? prev.filter((id) => id !== jobId) : [...prev, jobId]
     );
-
     startTransition(async () => {
       try {
-        await toggleSaveJob({
-          jobId,
-          seekerId,
-          isSaved: currentlySaved,
-        });
+        await toggleSaveJob({ jobId, seekerId, isSaved: currentlySaved });
       } catch (err) {
         console.error("Error toggling job:", err);
-        // Rollback
         setSavedJobs((prev) =>
           currentlySaved ? [...prev, jobId] : prev.filter((id) => id !== jobId)
         );

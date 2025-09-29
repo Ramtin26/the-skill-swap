@@ -2,8 +2,8 @@
 
 import { useOptimistic } from "react";
 
-import ApplicationCard from "./ApplicationCard";
 import { deleteApplication } from "@/app/_lib/actions";
+import ApplicationCard from "./ApplicationCard";
 import SpinnerMini from "./SpinnerMini";
 
 function ApplicationList({ applications }) {
@@ -26,15 +26,11 @@ function ApplicationList({ applications }) {
   }
 
   return (
-    <ul className="space-y-6">
+    <ul className="space-y-4 sm:space-y-6">
       {optimisticApplications.map((application) =>
-        applications.deleting ? (
-          <div
-            key={application.id}
-            className="grid items-center justify-center"
-          >
+        application.deleting ? (
+          <div key={application.id} className="grid place-items-center py-4">
             <SpinnerMini />
-            {/* <p className="text-xl text-primary-200">Deleting application...</p> */}
           </div>
         ) : (
           <ApplicationCard

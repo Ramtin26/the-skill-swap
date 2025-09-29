@@ -2,14 +2,17 @@
 
 import { useState } from "react";
 import { DocumentArrowUpIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import { SubmitButton } from "./SubmitButton";
 import { createUpdateJob } from "@/app/_lib/actions";
+import SubmitButton from "./SubmitButton";
 
 function CreateJobForm({ job, onClose }) {
   const [isOpen, setIsOpen] = useState(false);
   const [fileName, setFileName] = useState(null);
 
   const isEdit = Boolean(job);
+
+  const inputClass =
+    "w-full px-3 sm:px-4 py-2 rounded-md bg-primary-200 text-primary-800 text-sm sm:text-base";
 
   function handleClose() {
     if (isEdit) onClose?.();
@@ -29,11 +32,12 @@ function CreateJobForm({ job, onClose }) {
 
       {(isOpen || isEdit) && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-primary-900 border border-primary-700 rounded-2xl p-8 w-full max-w-3xl relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-primary-900 border border-primary-700 rounded-2xl p-4 sm:p-8 w-[95%] sm:w-full max-w-3xl relative max-h-[90vh] overflow-y-auto">
             {/* Close */}
             <button
               onClick={handleClose}
               className="absolute top-4 right-4 text-primary-400 hover:text-accent-400 cursor-pointer"
+              aria-label="close button"
             >
               <XMarkIcon className="w-6 h-6" />
             </button>
@@ -56,8 +60,9 @@ function CreateJobForm({ job, onClose }) {
                   type="text"
                   name="title"
                   required
+                  autoFocus
                   defaultValue={job?.title}
-                  className="w-full px-4 py-2 rounded-md bg-primary-200 text-primary-800"
+                  className={inputClass}
                 />
               </div>
               <div>
@@ -67,20 +72,20 @@ function CreateJobForm({ job, onClose }) {
                   name="companyName"
                   required
                   defaultValue={job?.companyName}
-                  className="w-full px-4 py-2 rounded-md bg-primary-200 text-primary-800"
+                  className={inputClass}
                 />
               </div>
 
               {/* Location */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block mb-2 font-medium">City</label>
                   <input
                     type="text"
                     name="city"
                     required
-                    defaultValue={job?.location.split(",").at(0)}
-                    className="w-full px-4 py-2 rounded-md bg-primary-200 text-primary-800"
+                    defaultValue={job?.location.split(",").at(0) || ""}
+                    className={inputClass}
                   />
                 </div>
                 <div>
@@ -90,7 +95,7 @@ function CreateJobForm({ job, onClose }) {
                     name="country"
                     required
                     defaultValue={job?.location.split(",").at(1)}
-                    className="w-full px-4 py-2 rounded-md bg-primary-200 text-primary-800"
+                    className={inputClass}
                   />
                 </div>
               </div>
@@ -101,7 +106,7 @@ function CreateJobForm({ job, onClose }) {
                   name="locationType"
                   required
                   defaultValue={job?.locationType}
-                  className="w-full px-4 py-2 rounded-md bg-primary-200 text-primary-800"
+                  className={inputClass}
                 >
                   <option value="remote">Remote</option>
                   <option value="in-office">In-office</option>
@@ -110,7 +115,7 @@ function CreateJobForm({ job, onClose }) {
               </div>
 
               {/* Job details */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block mb-2 font-medium">
                     Average Salary (per year)
@@ -121,7 +126,7 @@ function CreateJobForm({ job, onClose }) {
                     min="0"
                     required
                     defaultValue={job?.averageSalary}
-                    className="w-full px-4 py-2 rounded-md bg-primary-200 text-primary-800"
+                    className={inputClass}
                   />
                 </div>
                 <div>
@@ -132,12 +137,12 @@ function CreateJobForm({ job, onClose }) {
                     min="1"
                     required
                     defaultValue={job?.maxHires}
-                    className="w-full px-4 py-2 rounded-md bg-primary-200 text-primary-800"
+                    className={inputClass}
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block mb-2 font-medium">
                     Position Level
@@ -146,7 +151,7 @@ function CreateJobForm({ job, onClose }) {
                     name="positionLevel"
                     required
                     defaultValue={job?.positionLevel}
-                    className="w-full px-4 py-2 rounded-md bg-primary-200 text-primary-800"
+                    className={inputClass}
                   >
                     <option value="junior">Junior</option>
                     <option value="mid-level">Mid-level</option>
@@ -161,7 +166,7 @@ function CreateJobForm({ job, onClose }) {
                     name="employmentType"
                     required
                     defaultValue={job?.employmentType}
-                    className="w-full px-4 py-2 rounded-md bg-primary-200 text-primary-800"
+                    className={inputClass}
                   >
                     <option value="full-time">Full-time</option>
                     <option value="part-time">Part-time</option>
@@ -174,16 +179,13 @@ function CreateJobForm({ job, onClose }) {
               <div>
                 <label className="block mb-2 font-medium">Deadline</label>
                 <input
-                  //   type="date"
                   type="datetime-local"
                   name="deadline"
                   required
                   defaultValue={
-                    job
-                      ? new Date(job.deadline).toISOString().slice(0, 16) // matches datetime-local format
-                      : ""
+                    job ? new Date(job.deadline).toISOString().slice(0, 16) : ""
                   }
-                  className="w-full px-4 py-2 rounded-md bg-primary-200 text-primary-800"
+                  className={inputClass}
                 />
               </div>
 
@@ -196,7 +198,7 @@ function CreateJobForm({ job, onClose }) {
                   maxLength={500}
                   required
                   defaultValue={job?.description}
-                  className="w-full px-4 py-2 rounded-md bg-primary-200 text-primary-800"
+                  className={inputClass}
                 />
               </div>
 
@@ -222,7 +224,6 @@ function CreateJobForm({ job, onClose }) {
               </div>
 
               {/* Hidden */}
-              {/* <input type="hidden" name="employerId" value={employerId} /> */}
               {isEdit && <input type="hidden" name="id" value={job.id} />}
 
               {/* Submit */}

@@ -40,29 +40,14 @@ function SkillsSelector({ name, defaultSkills = [] }) {
   const [selected, setSelected] = useState(
     Array.isArray(defaultSkills) ? defaultSkills : []
   );
-  // const hiddenInputRef = useRef(null);
   const validationInputRef = useRef(null);
   const [showError, setShowError] = useState(false);
 
   function toggleSkill(skill) {
     setSelected((prev) =>
-      // console.log(prev)
       prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
     );
   }
-
-  // Attach custom validity when selected changes
-  // useEffect(() => {
-  //   if (hiddenInputRef.current) {
-  //     if (selected.length < 3) {
-  //       hiddenInputRef.current.setCustomValidity(
-  //         "You must select at least 3 skills."
-  //       );
-  //     } else {
-  //       hiddenInputRef.current.setCustomValidity(""); // clears error
-  //     }
-  //   }
-  // }, [selected]);
 
   useEffect(() => {
     const isValid = selected.length >= 3;
@@ -98,10 +83,10 @@ function SkillsSelector({ name, defaultSkills = [] }) {
             type="button"
             key={skill}
             onClick={() => toggleSkill(skill)}
-            className={`px-4 py-3 rounded-full text-sm border border-primary-200 transition cursor-pointer ${
+            className={`px-3 sm:px-4 py-2 sm:py-3 rounded-full text-sm border  transition cursor-pointer ${
               selected.includes(skill)
-                ? "bg-primary-600 text-white hover:bg-primary-700"
-                : "bg-primary-100 text-primary-900 hover:bg-primary-200 border-primary-600"
+                ? "bg-primary-600 text-white hover:bg-primary-700 border-primary-600"
+                : "bg-primary-100 text-primary-900 hover:bg-primary-200 border-primary-400"
             }`}
           >
             {skill}
@@ -109,39 +94,35 @@ function SkillsSelector({ name, defaultSkills = [] }) {
         ))}
       </div>
 
-      {/* Validation input - visible but styled to blend in */}
+      {/* Validation input */}
       <input
         ref={validationInputRef}
         type="text"
         required
         value={selected.length >= 3 ? "valid" : ""}
-        onChange={() => {}} // Controlled by skill buttons
+        onChange={() => {}}
         onInvalid={handleValidation}
         className="w-0 h-0 opacity-0 absolute pointer-events-none"
         tabIndex={-1}
         aria-hidden="true"
       />
 
-      {/* Hidden input sends JSON array to server action */}
       <input type="hidden" name={name} value={JSON.stringify(selected)} />
 
-      {/* <small className="text-gray-400">
-        Pick at least 3 skills (currently {selected.length})
-      </small> */}
-
       {/* Visual feedback */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mt-3 sm:mt-4">
         <small
-          className={`mt-2 ${
+          className={`text-xs sm:text-sm ${
             selected.length < 3 ? "text-red-500" : "text-primary-400"
           }`}
         >
           Pick at least 3 skills (currently {selected.length})
         </small>
+
         {showError && selected.length < 3 && (
-          <small className="text-red-500 flex gap-2 font-medium">
+          <small className="text-red-500 flex gap-1 sm:gap-2 items-center font-medium text-xs sm:text-sm">
             <span>
-              <ExclamationTriangleIcon className="h-5 w-5 text-yellow-400" />
+              <ExclamationTriangleIcon className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-400" />
             </span>{" "}
             At least 3 skills required
           </small>

@@ -1,7 +1,7 @@
 "use client";
 
-import { TrashIcon } from "@heroicons/react/24/solid";
 import { useTransition } from "react";
+import { TrashIcon } from "@heroicons/react/24/solid";
 import SpinnerMini from "./SpinnerMini";
 
 function DeletePostedJob({ jobId, onDelete }) {

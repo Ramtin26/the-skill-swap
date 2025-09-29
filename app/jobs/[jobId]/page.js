@@ -1,7 +1,9 @@
 import { Suspense } from "react";
-import { isAfter, isBefore } from "date-fns";
+import { isAfter } from "date-fns";
 
+import ApplicationForm from "@/app/_components/ApplicationForm";
 import Job from "@/app/_components/Job";
+import LoginMessage from "@/app/_components/LoginMessage";
 import Spinner from "@/app/_components/Spinner";
 import { auth } from "@/app/_lib/auth";
 import {
@@ -9,11 +11,8 @@ import {
   getApplications,
   getJob,
   getJobs,
-  getSavedJobs,
   getUser,
 } from "@/app/_lib/data-service";
-import LoginMessage from "@/app/_components/LoginMessage";
-import ApplicationForm from "@/app/_components/ApplicationForm";
 
 export async function generateMetadata({ params }) {
   const { jobId } = await params;
@@ -37,59 +36,44 @@ export default async function Page({ params }) {
 
   const session = await auth();
   const user = session ? await getUser(session?.user?.email) : null;
-  const applications = await getApplications(user.id);
+
+  const applications = user ? await getApplications(user.id) : [];
   const applicationsForThisJob = applications.find(
     (app) => app.jobs.id === jobId
   );
 
-  const deadlineDate = new Date(job.deadline); // stays the exact instant in UTC
-  const now = new Date();
+  const deadlineDate = new Date(job.deadline);
+  const deadlinePassed = isAfter(new Date(), deadlineDate);
 
-  const deadlinePassed = isAfter(now, deadlineDate); // true only when NOW > deadline
-
-  // const deadlinePassed = isBefore(new Date(job.deadline), new Date());
-  // console.log(deadlinePassed);
-
-  const allApplications = await getAllApplications(); // fetch all apps, not just by this user
+  const allApplications = await getAllApplications();
   const applicationsForThisJobAll = allApplications.filter(
     (app) => app.jobs.id === jobId
   );
   const hiresReached =
-    job.maxHires && applicationsForThisJobAll.length >= job.maxHires;
-
-  // console.log(applicationsForThisJobAll);
-  // console.log(hiresReached);
-
-  // console.log(job.maxHires);
-  // console.log(applications);
-  // console.log(applicationsForThisJob);
+    job.maxHires && applicationsForThisJobAll.length > job.maxHires;
 
   return (
-    <div className="max-w-6xl mx-auto mt-8">
+    <div className="max-w-6xl mx-auto mt-6 sm:mt-10">
       <Job job={job} />
 
-      <div>
+      <div className="mt-8 sm:mt-12">
         {!session ? (
-          // CASE 1: Not logged in
           <LoginMessage />
         ) : user?.role !== "seeker" ? (
-          // CASE 2: Logged in but employer
-          <p className="text-5xl font-semibold text-center text-accent-400">
+          <p className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-center text-accent-400">
             Only job seekers can apply for positions!
           </p>
         ) : deadlinePassed ? (
-          // CASE 3: Seeker but deadline passed
-          <p className="text-5xl font-semibold text-center text-accent-400">
+          <p className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-center text-accent-400">
             Sorry, the application deadline for this job has passed!
           </p>
         ) : hiresReached ? (
-          <p className="text-5xl font-semibold text-center text-accent-400">
+          <p className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-center text-accent-400">
             This position has already reached the maximum number of hires!
           </p>
         ) : (
-          // CASE 4: Seeker + deadline active → show form
           <>
-            <h2 className="text-5xl font-semibold text-center mb-10 text-accent-400">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-center mb-6 sm:mb-10 text-accent-400">
               Ready to make your move?
             </h2>
             <Suspense fallback={<Spinner />}>

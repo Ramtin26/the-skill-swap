@@ -15,7 +15,6 @@ function ConfirmRoleSelect({ currentRole }) {
       if (confirmed) {
         setRole(newRole);
       } else {
-        // revert select to previous
         setRole(currentRole);
       }
     }
@@ -26,7 +25,7 @@ function ConfirmRoleSelect({ currentRole }) {
       name="role"
       value={role}
       onChange={handleChange}
-      className="px-4 py-3 rounded-sm bg-primary-200 text-primary-800 self-start"
+      className="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-3 rounded-md bg-primary-200 text-primary-800 text-sm sm:text-base"
     >
       {roles.map((role) => (
         <option key={role} value={role}>

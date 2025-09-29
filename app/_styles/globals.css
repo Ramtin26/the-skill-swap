@@ -28,7 +28,6 @@
   /* warm */
   --color-warm-50: oklch(95% 0.05 82.881);
   --color-warm-500: oklch(54.6% 0.245 82.881);
-  /* --color-warm-600: oklch(50% 0.26 82.881); */
   --color-warm-600: oklch(48% 0.26 82.881);
 }
 
@@ -68,21 +67,17 @@
 @layer components {
   .spinner {
     display: flex;
-    /* gap: 2px; */
     gap: 3px;
     justify-content: center;
     align-items: flex-end;
-    /* height: 24px; */
     height: 36px;
   }
 
   .spinner span {
     display: block;
-    /* width: 4px; */
     width: 6px;
     height: 100%;
     background-color: #497aa1;
-    /* background-color: theme("colors.primary.500"); */
     animation: bar-bounce 1s infinite ease-in-out;
     border-radius: 1px;
   }

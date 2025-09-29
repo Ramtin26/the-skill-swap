@@ -3,8 +3,6 @@ import JobCard from "./JobCard";
 
 async function JobList({ filter }) {
   const jobs = await getJobs();
-  // console.log(jobs);
-
   if (!jobs.length) return null;
 
   let displayedJobs;
@@ -17,7 +15,7 @@ async function JobList({ filter }) {
     displayedJobs = jobs.filter((job) => job.locationType === "hybrid");
 
   return (
-    <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 xl:gap-14">
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] sm:grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
       {displayedJobs.map((job) => (
         <JobCard job={job} key={job.id} />
       ))}

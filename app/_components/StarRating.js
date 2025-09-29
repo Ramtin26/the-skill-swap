@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function StarRating({
   maxRating = 5,
@@ -14,11 +14,11 @@ function StarRating({
 
   function handleRate(value) {
     setRating(value);
-    onSetRating?.(value); // bubble up
+    onSetRating?.(value);
   }
 
   return (
-    <div className="flex items-center gap-1 bg-primary-900/80 p-2 rounded-lg">
+    <div className="flex items-center gap-1 bg-primary-900/80 p-2 sm:p-3 md:p-4 rounded-lg">
       <div className="flex">
         {Array.from({ length: maxRating }, (_, i) => {
           const value = i + 1;
@@ -34,7 +34,7 @@ function StarRating({
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
-                className="w-5 h-5"
+                className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6"
                 style={{ width: size, height: size }}
                 fill={value <= (tempRating || rating) ? color : "none"}
                 stroke={color}
@@ -46,8 +46,8 @@ function StarRating({
         })}
       </div>
 
-      {/* numeric feedback (always visible, stable width) */}
-      <span className="text-sm font-medium text-primary-300 w-10 text-center">
+      {/* numeric feedback*/}
+      <span className="text-sm sm:text-sm md:text-base font-medium text-primary-300 w-10 text-center">
         {tempRating || rating}/{maxRating}
       </span>
     </div>

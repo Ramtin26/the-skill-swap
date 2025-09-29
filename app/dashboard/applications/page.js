@@ -1,7 +1,7 @@
+import Link from "next/link";
 import ApplicationList from "@/app/_components/ApplicationList";
 import { auth } from "@/app/_lib/auth";
 import { getApplications } from "@/app/_lib/data-service";
-import Link from "next/link";
 
 export const metadata = {
   title: "Applications",
@@ -9,10 +9,10 @@ export const metadata = {
 
 export default async function Page() {
   const session = await auth();
-  const applications = await getApplications(session.user.seekerId);
+  const applications = await getApplications(session.user.id);
 
   return (
-    <div>
+    <div className="px-4 sm:px-6">
       <h2 className="font-semibold text-2xl text-accent-400 mb-7">
         Your applications
       </h2>

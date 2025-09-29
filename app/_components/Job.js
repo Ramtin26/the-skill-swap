@@ -8,12 +8,14 @@ import {
   MapPinIcon,
 } from "@heroicons/react/24/solid";
 import { differenceInDays, differenceInHours } from "date-fns";
+
 import GoBackButton from "./GoBackButton";
 import SaveJobButton from "./SaveJobButton";
 import { formatCurrency } from "@/app/helper/helper";
 
 export default function Job({ job }) {
   const {
+    id: jobId,
     title,
     companyName,
     image,
@@ -43,15 +45,14 @@ export default function Job({ job }) {
   }
 
   let deadlineColor;
-  if (hoursLeft <= 0) deadlineColor = "bg-gray-200 text-gray-800"; // passed
-  else if (hoursLeft <= 24) deadlineColor = "bg-red-100 text-red-800"; // < 24h
+  if (hoursLeft <= 0) deadlineColor = "bg-gray-200 text-gray-800";
+  else if (hoursLeft <= 24) deadlineColor = "bg-red-100 text-red-800";
   else if (daysLeft <= 7) deadlineColor = "bg-orange-100 text-orange-800";
   else deadlineColor = "bg-green-100 text-green-800";
 
   return (
-    <article className="bg-primary-900 rounded-2xl shadow-md overflow-hidden mb-20">
-      {/* Header / Cover */}
-      {/* <div className="relative h-64 w-full"> */}
+    <article className="bg-primary-900 rounded-2xl shadow-md overflow-hidden mb-12 sm:mb-20">
+      {/* Cover */}
       <div className="relative aspect-[16/9] w-full">
         <Image
           src={image}
@@ -61,32 +62,20 @@ export default function Job({ job }) {
         />
         <GoBackButton />
       </div>
-      {/* <div className="relative h-[32rem] w-full">
-        <Image
-          src={image}
-          alt={`${companyName} office`}
-          fill
-          className="object-cover blur-md scale-110"
-        />
-        <Image
-          src={image}
-          alt={`${companyName} office`}
-          fill
-          className="object-contain relative z-10"
-        />
-      </div> */}
 
-      {/* Job Header */}
-      <div className="p-8 border-b border-primary-700">
-        <div className="flex gap-4 items-center">
-          <h1 className="text-4xl font-semibold mb-2">{title}</h1>
-          <SaveJobButton jobId={job.id} size={8} />
+      {/* Header */}
+      <div className="p-6 sm:p-8 border-b border-primary-700">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold">
+            {title}
+          </h1>
+          <SaveJobButton jobId={jobId} size={8} />
         </div>
-        <p className="text-lg">{companyName}</p>
+        <p className="text-base sm:text-lg mt-1">{companyName}</p>
       </div>
 
-      {/* Job Details Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-8">
+      {/* Details */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-6 sm:p-8">
         <Detail icon={<MapPinIcon />} label="Location" value={location} />
         <Detail
           icon={<BriefcaseIcon />}
@@ -111,19 +100,23 @@ export default function Job({ job }) {
         />
       </div>
 
-      {/* Deadline Badge */}
-      <div className="px-8 pb-4 mb-4">
+      {/* Deadline */}
+      <div className="px-6 sm:px-8 pb-4 mb-4">
         <span
-          className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${deadlineColor}`}
+          className={`inline-block px-4 py-1.5 rounded-full text-sm sm:text-base font-medium ${deadlineColor}`}
         >
           {deadlineText}
         </span>
       </div>
 
       {/* Description */}
-      <div className="px-8 pb-10">
-        <h2 className="text-2xl font-semibold mb-4">Job Description</h2>
-        <p className="text-primary-200 leading-relaxed">{description}</p>
+      <div className="px-6 sm:px-8 pb-8 sm:pb-10">
+        <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">
+          Job Description
+        </h2>
+        <p className="text-primary-200 leading-relaxed text-sm sm:text-base">
+          {description}
+        </p>
       </div>
     </article>
   );
@@ -132,10 +125,10 @@ export default function Job({ job }) {
 function Detail({ icon, label, value }) {
   return (
     <div className="flex items-start space-x-3">
-      <div className="text-accent-500 h-5 w-5">{icon}</div>
+      <div className="text-accent-500 h-5 w-5 flex-shrink-0">{icon}</div>
       <div>
-        <p className="text-sm text-primary-300">{label}</p>
-        <p className="text-base font-medium">{value}</p>
+        <p className="text-xs sm:text-sm text-primary-300">{label}</p>
+        <p className="text-sm sm:text-base font-medium break-words">{value}</p>
       </div>
     </div>
   );

@@ -1,26 +1,22 @@
 import Link from "next/link";
-import { auth } from "@/app/_lib/auth";
 import Image from "next/image";
+import { auth } from "@/app/_lib/auth";
 
 export default async function Navigation() {
   const session = await auth();
 
+  const listStyle = "hover:text-accent-400 transition-colors";
+
   return (
-    <nav className="z-10 text-xl">
-      <ul className="flex gap-16 items-center">
+    <nav className="z-10 text-base sm:text-lg md:text-xl">
+      <ul className="flex flex-wrap gap-4 sm:gap-8 md:gap-12 lg:gap-16 items-center justify-end">
         <li>
-          <Link
-            href="/jobs"
-            className="hover:text-accent-400 transition-colors"
-          >
+          <Link href="/jobs" className={listStyle}>
             Jobs
           </Link>
         </li>
         <li>
-          <Link
-            href="/about"
-            className="hover:text-accent-400 transition-colors"
-          >
+          <Link href="/about" className={listStyle}>
             About
           </Link>
         </li>
@@ -28,7 +24,7 @@ export default async function Navigation() {
           {session?.user?.image ? (
             <Link
               href="/dashboard"
-              className="hover:text-accent-400 transition-colors flex items-center gap-4"
+              className={`${listStyle} flex items-center gap-2 sm:gap-3 md:gap-4`}
             >
               <Image
                 width={32}
@@ -42,10 +38,7 @@ export default async function Navigation() {
               <span>My dashboard</span>
             </Link>
           ) : (
-            <Link
-              href="/dashboard"
-              className="hover:text-accent-400 transition-colors"
-            >
+            <Link href="/dashboard" className={listStyle}>
               My dashboard
             </Link>
           )}

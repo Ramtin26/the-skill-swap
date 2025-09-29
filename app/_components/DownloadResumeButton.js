@@ -1,14 +1,13 @@
 import { DocumentArrowDownIcon } from "@heroicons/react/24/solid";
 import { getResumeSignedURL } from "@/app/_lib/actions";
-import { getCleanFilename } from "@/app/helper/helper";
 
 function DownloadResumeButton({ resumeURL, jobTitle, fullName }) {
-  async function handleDownloadResume() {
+  async function downloadResume() {
     const signedUrl = await getResumeSignedURL({ resumePath: resumeURL });
-    window.open(signedUrl, "_blank"); // open in new tab or start download
+    window.open(signedUrl, "_blank");
   }
 
-  // First name only (default to "User" if missing)
+  // First name only
   const firstName =
     fullName
       ?.trim()
@@ -21,10 +20,10 @@ function DownloadResumeButton({ resumeURL, jobTitle, fullName }) {
 
   return (
     <button
-      onClick={handleDownloadResume}
-      className="flex items-center gap-1 text-sm text-accent-400 hover:underline cursor-pointer"
+      onClick={downloadResume}
+      className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-accent-400 hover:underline"
     >
-      <DocumentArrowDownIcon className="h-5 w-5" />
+      <DocumentArrowDownIcon className="h-4 w-4 sm:h-5 sm:w-5" />
       {displayName}
     </button>
   );

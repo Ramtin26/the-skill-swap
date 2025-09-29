@@ -23,35 +23,37 @@ function ExperienceManager({ name, defaultExperience = [] }) {
   return (
     <div className="space-y-4 mt-2">
       {items.map((exp, i) => (
-        <div key={i} className="flex gap-2 items-center">
+        <div
+          key={i}
+          className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center"
+        >
           <input
             type="text"
             placeholder="Role"
             value={exp.role ?? ""}
             onChange={(e) => updateItem(i, "role", e.target.value)}
-            className="flex-1 rounded-sm border border-primary-200  px-4 py-2"
+            className="flex-1 rounded-sm border border-primary-200 px-3 py-2 text-sm md:text-base"
           />
           <input
             type="number"
             placeholder="Years"
             value={exp.years ?? ""}
             onChange={(e) => updateItem(i, "years", e.target.value)}
-            className="w-24 rounded-sm border border-primary-200 px-4 py-2"
+            className="w-full sm:w-24 rounded-sm border border-primary-200 px-3 py-2 text-sm md:text-base"
           />
           <input
             type="text"
             placeholder="Company"
             value={exp.company ?? ""}
             onChange={(e) => updateItem(i, "company", e.target.value)}
-            className="flex-1 rounded-sm border border-primary-200 px-4 py-2"
+            className="flex-1 rounded-sm border border-primary-200 px-3 py-2 text-sm md:text-base"
           />
           <button
             type="button"
             onClick={() => removeItem(i)}
-            className="group px-2 py-2 rounded-full bg-primary-600 hover:bg-primary-700 text-white cursor-pointer"
+            className="group px-2 py-2 sm:px-3 sm:py-3 rounded-full bg-primary-600 hover:bg-primary-700 text-white cursor-pointer"
           >
-            <XMarkIcon className="h-4 w-4" />
-            {/* ✕ */}
+            <XMarkIcon className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
         </div>
       ))}
@@ -59,10 +61,10 @@ function ExperienceManager({ name, defaultExperience = [] }) {
       <button
         type="button"
         onClick={addItem}
-        className="flex gap-1 items-center px-3 py-2 rounded-md bg-accent-500 hover:bg-accent-600 text-white cursor-pointer"
+        className="flex gap-1 items-center px-3 py-2 sm:px-4 sm:py-3 rounded-md bg-accent-500 hover:bg-accent-600 text-white text-sm md:text-base cursor-pointer"
       >
         <span>
-          <PlusIcon className="h-5 w-5" />
+          <PlusIcon className="h-4 w-4 sm:h-5 sm:w-5" />
         </span>{" "}
         Add experience
       </button>

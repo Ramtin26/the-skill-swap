@@ -10,11 +10,11 @@ const authConfig = {
     }),
   ],
   callbacks: {
-    authorized({ auth, request }) {
+    authorized({ auth }) {
       return !!auth?.user;
     },
 
-    async signIn({ user, account, profile, req }) {
+    async signIn({ user }) {
       try {
         const existingUser = await getUser(user.email);
 
@@ -27,36 +27,29 @@ const authConfig = {
 
         return true;
       } catch (err) {
-        console.error("Error during sign in", err);
+        console.error("signIn failed", err);
         return false;
       }
     },
+
     async jwt({ token, user, trigger }) {
-      // if (user) {
-      //   // enrich JWT with DB user data
-      //   const dbUser = await getUser(user.email);
-      //   token.seekerId = dbUser.id;
-      //   token.role = dbUser.role;
-      // }
-      // return token;
+      // refresh DB data on new sign-in or manual trigger
       if (user || trigger === "update") {
         try {
           const dbUser = await getUser(token.email || user?.email);
           if (dbUser) {
-            token.seekerId = dbUser.id;
+            token.id = dbUser.id;
             token.role = dbUser.role;
           }
         } catch (error) {
-          console.error("Error fetching user in JWT callback:", error);
+          console.error("JWT callback error:", error);
         }
       }
       return token;
     },
-    async session({ session, user, token }) {
-      // const dbUser = await getUser(session.user.email);
-      // session.user.seekerId = dbUser.id;
-      // session.user.role = dbUser.role;
-      session.user.seekerId = token.seekerId;
+
+    async session({ session, token }) {
+      session.user.id = token.id;
       session.user.role = token.role;
       return session;
     },
