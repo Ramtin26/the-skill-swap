@@ -9,10 +9,11 @@ const authConfig = {
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
   ],
+  session: { strategy: "jwt" },
   callbacks: {
-    authorized({ auth }) {
-      return !!auth?.user;
-    },
+    // authorized({ auth }) {
+    //   return !!auth?.user;
+    // },
 
     async signIn({ user }) {
       try {
