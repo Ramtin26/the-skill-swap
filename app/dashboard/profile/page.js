@@ -11,7 +11,6 @@ export default async function Page() {
   const user = await getUser(session?.user?.email);
 
   return (
-    // <div>
     <div className="px-4 sm:px-6 md:px-8">
       <h2 className="font-semibold text-xl sm:text-2xl text-accent-400 mb-3 sm:mb-4">
         Update your dashboard profile
