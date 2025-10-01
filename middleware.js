@@ -4,8 +4,6 @@ import { getToken } from "next-auth/jwt";
 export async function middleware(req) {
   const url = req.nextUrl;
 
-  console.log("REQ COOKIES:", req.cookies.getAll());
-
   const token = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET,
@@ -13,8 +11,7 @@ export async function middleware(req) {
     cookies: req.cookies, // 👈 Force cookie extraction
   });
 
-  console.log("MIDDLEWARE HIT:", url.pathname);
-  console.log("TOKEN:", token);
+  // console.log("MIDDLEWARE HIT:", url.pathname, "TOKEN:", token);
 
   if (!token) {
     if (url.pathname.startsWith("/login")) {
