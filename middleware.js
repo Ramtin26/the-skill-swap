@@ -27,8 +27,10 @@ export async function middleware(req) {
     return NextResponse.next();
   }
 
-  if (!token.role && url.pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/onboarding/role", req.url));
+  if (!token.role) {
+    if (!url.pathname.startsWith("/onboarding/role")) {
+      return NextResponse.redirect(new URL("/onboarding/role", req.url));
+    }
   }
 
   if (token.role && url.pathname.startsWith("/onboarding")) {

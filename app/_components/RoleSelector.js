@@ -38,6 +38,7 @@ function RoleSelector() {
         });
 
         router.push("/dashboard");
+        router.refresh();
       } catch (err) {
         console.error(err);
         alert("Something went wrong. Please try again.");
