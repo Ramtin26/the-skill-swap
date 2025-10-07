@@ -66,8 +66,8 @@ function SideNavigation({ role }) {
   const navLinks = getNavLinks();
 
   return (
-    <nav className="border-r border-primary-900">
-      <ul className="flex flex-col gap-1 sm:gap-2 text-base sm:text-lg h-full">
+    <nav className="border-r border-primary-900 h-full flex flex-col">
+      <ul className="flex flex-col gap-1 sm:gap-2 text-base sm:text-lg">
         {navLinks.map((link) => (
           <li key={link.name}>
             <Link
@@ -82,7 +82,7 @@ function SideNavigation({ role }) {
           </li>
         ))}
 
-        <li className="mt-auto pb-2 sm:pb-4">
+        <li className="mt-8 sm:mt-12">
           <SignOutButton />
         </li>
       </ul>

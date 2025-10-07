@@ -25,7 +25,7 @@ function PostedjobCard({ postedJob, onDelete }) {
         </div>
 
         {/* Job details */}
-        <div className="flex-1 space-y-2 text-primary-200">
+        <div className="flex-1 space-y-2 text-primary-200 min-w-0">
           <h3 className="font-semibold text-lg sm:text-xl text-accent-400">
             {postedJob.title}
           </h3>
@@ -48,7 +48,7 @@ function PostedjobCard({ postedJob, onDelete }) {
         </div>
 
         {/* Actions */}
-        <div className="flex flex-row sm:flex-col gap-3 mt-4 sm:mt-0">
+        <div className="flex flex-row justify-end sm:flex-col gap-3 w-full sm:w-auto">
           <button
             onClick={() => setShowEditForm(true)}
             className="p-2 bg-accent-800 rounded-xl hover:bg-accent-700 transition-colors cursor-pointer"

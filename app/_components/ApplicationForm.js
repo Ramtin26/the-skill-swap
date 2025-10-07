@@ -1,16 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { AtSymbolIcon, DocumentArrowUpIcon } from "@heroicons/react/24/solid";
+import { AtSymbolIcon } from "@heroicons/react/24/solid";
 import { format } from "date-fns";
+import FileUpload from "./FileUpload";
 import SubmitButton from "./SubmitButton";
 import { createApplication } from "@/app/_lib/actions";
 
 function ApplicationForm({ job, user, resumePath, note }) {
-  const [fileName, setFileName] = useState(
-    resumePath ? resumePath.split("/").pop() : null
-  );
-
   return (
     <form
       action={createApplication}
@@ -39,26 +35,7 @@ function ApplicationForm({ job, user, resumePath, note }) {
       </div>
 
       {/* Resume upload */}
-      <div>
-        <label className="block mb-2 font-medium text-primary-200">
-          Resume (PDF only)
-        </label>
-        <div className="relative border-2 border-dashed border-primary-600 rounded-lg p-4 sm:p-6  text-center hover:border-accent-500 transition-colors">
-          <input
-            type="file"
-            name="resume"
-            accept="application/pdf"
-            className="absolute inset-0 opacity-0 cursor-pointer"
-            onChange={(e) => setFileName(e.target.files?.[0]?.name || null)}
-            required
-          />
-          <DocumentArrowUpIcon className="mx-auto w-8 h-8 sm:w-10 sm:h-10 text-primary-500" />
-          <p className="text-primary-400 mt-2 text-xs sm:text-sm">
-            {fileName || "Drag & drop or click to upload"}
-          </p>
-          <small className="text-primary-400">Max 5MG size</small>
-        </div>
-      </div>
+      <FileUpload name="resume" resumePath={resumePath} required />
 
       <div>
         <label className="block mb-2 font-medium text-primary-200">

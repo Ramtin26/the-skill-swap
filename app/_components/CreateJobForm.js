@@ -20,7 +20,7 @@ function CreateJobForm({ job, onClose }) {
   }
 
   return (
-    <div>
+    <div className="flex justify-center sm:justify-start">
       {!isOpen && !isEdit && (
         <button
           onClick={() => setIsOpen(true)}
@@ -31,8 +31,8 @@ function CreateJobForm({ job, onClose }) {
       )}
 
       {(isOpen || isEdit) && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-primary-900 border border-primary-700 rounded-2xl p-4 sm:p-8 w-[95%] sm:w-full max-w-3xl relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-primary-900 border border-primary-700 rounded-2xl p-4 sm:p-8 w-full max-w-3xl relative max-h-[90vh] overflow-y-auto">
             {/* Close */}
             <button
               onClick={handleClose}
@@ -55,7 +55,9 @@ function CreateJobForm({ job, onClose }) {
             >
               {/* Basics */}
               <div>
-                <label className="block mb-2 font-medium">Job Title</label>
+                <label className="block mb-2 font-medium text-sm sm:text-base">
+                  Job Title
+                </label>
                 <input
                   type="text"
                   name="title"
@@ -66,7 +68,9 @@ function CreateJobForm({ job, onClose }) {
                 />
               </div>
               <div>
-                <label className="block mb-2 font-medium">Company Name</label>
+                <label className="block mb-2 font-medium text-sm sm:text-base">
+                  Company Name
+                </label>
                 <input
                   type="text"
                   name="companyName"
@@ -79,7 +83,9 @@ function CreateJobForm({ job, onClose }) {
               {/* Location */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block mb-2 font-medium">City</label>
+                  <label className="block mb-2 font-medium text-sm sm:text-base">
+                    City
+                  </label>
                   <input
                     type="text"
                     name="city"
@@ -89,7 +95,9 @@ function CreateJobForm({ job, onClose }) {
                   />
                 </div>
                 <div>
-                  <label className="block mb-2 font-medium">Country</label>
+                  <label className="block mb-2 font-medium text-sm sm:text-base">
+                    Country
+                  </label>
                   <input
                     type="text"
                     name="country"
@@ -101,7 +109,9 @@ function CreateJobForm({ job, onClose }) {
               </div>
 
               <div>
-                <label className="block mb-2 font-medium">Location Type</label>
+                <label className="block mb-2 font-medium text-sm sm:text-base">
+                  Location Type
+                </label>
                 <select
                   name="locationType"
                   required
@@ -117,7 +127,7 @@ function CreateJobForm({ job, onClose }) {
               {/* Job details */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block mb-2 font-medium">
+                  <label className="block mb-2 font-medium text-sm sm:text-base">
                     Average Salary (per year)
                   </label>
                   <input
@@ -130,7 +140,9 @@ function CreateJobForm({ job, onClose }) {
                   />
                 </div>
                 <div>
-                  <label className="block mb-2 font-medium">Max Hires</label>
+                  <label className="block mb-2 font-medium text-sm sm:text-base">
+                    Max Hires
+                  </label>
                   <input
                     type="number"
                     name="maxHires"
@@ -144,7 +156,7 @@ function CreateJobForm({ job, onClose }) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block mb-2 font-medium">
+                  <label className="block mb-2 font-medium text-sm sm:text-base">
                     Position Level
                   </label>
                   <select
@@ -158,8 +170,9 @@ function CreateJobForm({ job, onClose }) {
                     <option value="senior">Senior</option>
                   </select>
                 </div>
+
                 <div>
-                  <label className="block mb-2 font-medium">
+                  <label className="block mb-2 font-medium text-sm sm:text-base">
                     Employment Type
                   </label>
                   <select
@@ -177,7 +190,9 @@ function CreateJobForm({ job, onClose }) {
 
               {/* Deadline */}
               <div>
-                <label className="block mb-2 font-medium">Deadline</label>
+                <label className="block mb-2 font-medium text-sm sm:text-base">
+                  Deadline
+                </label>
                 <input
                   type="datetime-local"
                   name="deadline"
@@ -191,7 +206,9 @@ function CreateJobForm({ job, onClose }) {
 
               {/* Description */}
               <div>
-                <label className="block mb-2 font-medium">Description</label>
+                <label className="block mb-2 font-medium text-sm sm:text-base">
+                  Description
+                </label>
                 <textarea
                   name="description"
                   rows={5}
@@ -204,7 +221,9 @@ function CreateJobForm({ job, onClose }) {
 
               {/* Image Upload */}
               <div>
-                <label className="block mb-2 font-medium">Job Image</label>
+                <label className="block mb-2 font-medium text-sm sm:text-base">
+                  Job Image
+                </label>
                 <div className="relative border-2 border-dashed border-primary-600 rounded-lg p-6 text-center hover:border-accent-500 transition-colors">
                   <input
                     type="file"
@@ -216,7 +235,7 @@ function CreateJobForm({ job, onClose }) {
                     }
                   />
                   <DocumentArrowUpIcon className="mx-auto w-10 h-10 text-primary-500" />
-                  <p className="text-primary-400 mt-2">
+                  <p className="text-primary-400 mt-2 break-words px-2">
                     {fileName || job?.image || "Drag & drop or click to upload"}
                   </p>
                   <small className="text-primary-400">Max 5MB</small>

@@ -6,7 +6,6 @@ function StarRating({
   maxRating = 5,
   initialRating = 0,
   onSetRating,
-  size = 20,
   color = "#facc15", // Tailwind yellow-400
 }) {
   const [rating, setRating] = useState(initialRating);
@@ -18,7 +17,7 @@ function StarRating({
   }
 
   return (
-    <div className="flex items-center gap-1 bg-primary-900/80 p-2 sm:p-3 md:p-4 rounded-lg">
+    <div className="flex items-center gap-1 bg-primary-900/80 p-2 rounded-lg">
       <div className="flex">
         {Array.from({ length: maxRating }, (_, i) => {
           const value = i + 1;
@@ -34,8 +33,7 @@ function StarRating({
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
-                className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6"
-                style={{ width: size, height: size }}
+                className="w-4 h-4 sm:w-5 sm:h-5"
                 fill={value <= (tempRating || rating) ? color : "none"}
                 stroke={color}
               >
@@ -47,7 +45,7 @@ function StarRating({
       </div>
 
       {/* numeric feedback*/}
-      <span className="text-sm sm:text-sm md:text-base font-medium text-primary-300 w-10 text-center">
+      <span className="text-xs sm:text-sm font-medium text-primary-300 min-w-[2.5rem] text-center">
         {tempRating || rating}/{maxRating}
       </span>
     </div>

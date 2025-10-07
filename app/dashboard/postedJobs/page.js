@@ -19,7 +19,7 @@ export default async function Page() {
         </h2>
 
         {postedJobs.length === 0 ? (
-          <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-start">
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
             <p>You have not posted any jobs yet. Post a job now &rarr;</p>
             <CreateJobForm />
           </div>

@@ -25,33 +25,33 @@ function ExperienceManager({ name, defaultExperience = [] }) {
       {items.map((exp, i) => (
         <div
           key={i}
-          className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center"
+          className="flex flex-col lg:flex-row gap-2 lg:items-center"
         >
           <input
             type="text"
             placeholder="Role"
             value={exp.role ?? ""}
             onChange={(e) => updateItem(i, "role", e.target.value)}
-            className="flex-1 rounded-sm border border-primary-200 px-3 py-2 text-sm md:text-base"
+            className="w-full lg:flex-1 min-w-0 rounded-sm border border-primary-200 px-3 py-2 text-sm md:text-base"
           />
           <input
             type="number"
             placeholder="Years"
             value={exp.years ?? ""}
             onChange={(e) => updateItem(i, "years", e.target.value)}
-            className="w-full sm:w-24 rounded-sm border border-primary-200 px-3 py-2 text-sm md:text-base"
+            className="w-full lg:flex-1 min-w-0 rounded-sm border border-primary-200 px-3 py-2 text-sm md:text-base"
           />
           <input
             type="text"
             placeholder="Company"
             value={exp.company ?? ""}
             onChange={(e) => updateItem(i, "company", e.target.value)}
-            className="flex-1 rounded-sm border border-primary-200 px-3 py-2 text-sm md:text-base"
+            className="w-full lg:flex-1 min-w-0 rounded-sm border border-primary-200 px-3 py-2 text-sm md:text-base"
           />
           <button
             type="button"
             onClick={() => removeItem(i)}
-            className="group px-2 py-2 sm:px-3 sm:py-3 rounded-full bg-primary-600 hover:bg-primary-700 text-white cursor-pointer"
+            className="self-center lg:self-auto w-10 h-10 lg:w-auto lg:h-auto flex items-center justify-center lg:px-3 lg:py-3 rounded-full bg-primary-600 hover:bg-primary-700 text-white cursor-pointer flex-shrink-0"
           >
             <XMarkIcon className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>

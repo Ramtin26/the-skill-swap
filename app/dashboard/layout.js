@@ -7,9 +7,11 @@ export default async function layout({ children }) {
   const user = await getUser(session.user.email);
 
   return (
-    <div className="min-h-screen grid gap-6 md:grid-cols-[14rem_1fr] lg:grid-cols-[16rem_1fr]">
+    <div className="min-h-screen grid gap-6 lg:grid-cols-[16rem_1fr]">
       <SideNavigation role={user.role} />
-      <div className="px-4 sm:px-6 md:px-8 py-4">{children}</div>
+      <div className="px-4 sm:px-6 md:px-8 py-4 min-w-0 overflow-hidden">
+        {children}
+      </div>
     </div>
   );
 }

@@ -50,7 +50,7 @@ const authConfig = {
     },
 
     async session({ session, token }) {
-      console.log("SESSION CALLBACK", { token });
+      // console.log("SESSION CALLBACK", { token });
       session.user.id = token.id;
       session.user.role = token.role;
       return session;

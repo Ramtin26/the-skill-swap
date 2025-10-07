@@ -69,9 +69,9 @@ function ApplicationCard({ application, onDelete }) {
       className="space-y-3 p-4 sm:p-6 border border-primary-700 rounded-xl shadow-sm bg-primary-900/40"
     >
       {/* Top row: job info + actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
         {/* Job logo + info */}
-        <div className="flex items-center gap-4 flex-1">
+        <div className="flex items-center gap-4 flex-1 min-w-0">
           <Image
             src={image}
             alt={companyName}
@@ -79,8 +79,10 @@ function ApplicationCard({ application, onDelete }) {
             height={48}
             className="h-10 w-10 sm:h-12 sm:w-12 object-cover rounded-md shrink-0"
           />
-          <div>
-            <h4 className="font-semibold text-base sm:text-lg">{title}</h4>
+          <div className="min-w-0 flex-1">
+            <h4 className="font-semibold text-base sm:text-lg truncate">
+              {title}
+            </h4>
             <p className="text-xs sm:text-sm text-primary-300">
               {companyName} — {locationType}, {positionLevel}
             </p>
@@ -91,21 +93,23 @@ function ApplicationCard({ application, onDelete }) {
         </div>
 
         {/* Actions */}
-        <div className="flex flex-wrap items-start justify-end gap-2 sm:gap-3">
-          {!deadlinePassed && (
-            <Link
-              href={`/dashboard/applications/edit/${id}`}
-              className="group flex items-center gap-1 sm:gap-2 p-2 rounded-lg uppercase text-[10px] sm:text-xs font-bold text-primary-300 hover:bg-accent-600 transition-colors hover:text-primary-900"
-            >
-              <PencilSquareIcon className="h-4 w-4 sm:h-5 sm:w-5 text-primary-600 group-hover:text-primary-800" />
-              <span>Edit</span>
-            </Link>
-          )}
+        <div className="flex flex-row md:flex-col items-center justify-end gap-2 md:shrink-0">
+          <div className="flex flex-wrap items-center gap-2">
+            {!deadlinePassed && (
+              <Link
+                href={`/dashboard/applications/edit/${id}`}
+                className="group flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md uppercase text-[0.7rem] sm:text-xs font-bold text-primary-300 hover:bg-accent-600 transition-colors hover:text-primary-900"
+              >
+                <PencilSquareIcon className="h-4 w-4 sm:h-5 sm:w-5 text-primary-600 group-hover:text-primary-800" />
+                <span>Edit</span>
+              </Link>
+            )}
 
-          <DeleteApplication applicationId={id} onDelete={onDelete} />
+            <DeleteApplication applicationId={id} onDelete={onDelete} />
+          </div>
 
           {resumePath && (
-            <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-bold text-accent-400 px-2 sm:px-3 py-1 sm:py-2 bg-accent-900/30 rounded-md max-w-[110px] sm:max-w-[160px]">
+            <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-bold text-accent-400 px-2 sm:px-3 py-1 sm:py-2 bg-accent-900/30 rounded-md max-w-[140px] sm:max-w-[180px]">
               <span>
                 <DocumentTextIcon className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
               </span>

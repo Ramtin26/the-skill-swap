@@ -25,30 +25,32 @@ function UpdateProfileForm({ user }) {
   return (
     <form
       action={updateUser}
-      className="flex flex-col gap-6 bg-primary-900 rounded-lg px-4 sm:px-8 md:px-12 py-6 sm:py-8 text-lg sm:text-base"
+      className="flex flex-col gap-6 bg-primary-900 rounded-lg px-4 sm:px-8 md:px-12 py-6 sm:py-8 text-sm sm:text-base"
     >
       <div className="space-y-1 sm:space-y-2">
-        <label>Full name</label>
+        <label className="text-sm sm:text-base">Full name</label>
         <input
           defaultValue={fullName}
           name="fullName"
-          className="w-full mt-1 px-3 sm:px-4 py-2 sm:py-3 rounded-sm bg-primary-200 text-primary-800"
+          className="w-full mt-1 px-3 sm:px-4 py-2 sm:py-3 rounded-sm bg-primary-200 text-primary-800 text-sm sm:text-base"
         />
       </div>
 
       <div className="space-y-1 sm:space-y-2">
-        <label>Email address</label>
+        <label className="text-sm sm:text-base">Email address</label>
         <input
           disabled
           defaultValue={email}
           name="email"
-          className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-sm mt-1 bg-primary-200 text-primary-800 disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-sm mt-1 bg-primary-200 text-primary-800 text-sm sm:text-base disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
         />
       </div>
 
       <div className="space-y-1 sm:space-y-2">
         <div className="flex items-center justify-between">
-          <label htmlFor="nationality">Where are you from?</label>
+          <label htmlFor="nationality" className="text-sm sm:text-base">
+            Where are you from?
+          </label>
           {countryFlag && (
             <Image
               src={
@@ -67,19 +69,19 @@ function UpdateProfileForm({ user }) {
           name="nationality"
           id="nationality"
           defaultcountry={nationality}
-          className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-sm bg-primary-200 text-primary-800"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-sm bg-primary-200 text-primary-800 text-sm sm:text-base"
         />
       </div>
 
       {userRole === "seeker" ? (
         <>
           <div className="space-y-1 sm:space-y-2">
-            <label>Your skills</label>
+            <label className="text-sm sm:text-base">Your skills</label>
             <SkillsSelector name="skills" defaultSkills={skills} />
           </div>
 
           <div className="space-y-1 sm:space-y-2">
-            <label>Work experience</label>
+            <label className="text-sm sm:text-base">Work experience</label>
             <ExperienceManager
               name="experience"
               defaultExperience={experience}
@@ -89,35 +91,40 @@ function UpdateProfileForm({ user }) {
       ) : (
         <>
           <div className="space-y-1 sm:space-y-2">
-            <label>What is your company name?</label>
+            <label className="text-sm sm:text-base">
+              What is your company name?
+            </label>
             <input
               name="companyName"
               required
               defaultValue={companyName}
-              className="w-full mt-1 px-3 sm:px-4 py-2 sm:py-3 rounded-sm bg-primary-200 text-primary-800"
+              className="w-full mt-1 px-3 sm:px-4 py-2 sm:py-3 rounded-sm bg-primary-200 text-primary-800 text-sm sm:text-base"
             />
           </div>
+
           <div className="space-y-1 sm:space-y-2">
-            <label>How many people work in your company?</label>
+            <label className="text-sm sm:text-base">
+              How many people work in your company?
+            </label>
             <input
               type="number"
               name="companySize"
               defaultValue={companySize}
-              className="w-full mt-1 px-3 sm:px-4 py-2 sm:py-3 rounded-sm bg-primary-200 text-primary-800"
+              className="w-full mt-1 px-3 sm:px-4 py-2 sm:py-3 rounded-sm bg-primary-200 text-primary-800 text-sm sm:text-base"
             />
           </div>
         </>
       )}
 
       <div className="space-y-1 sm:space-y-2">
-        <label>Short bio</label>
+        <label className="text-sm sm:text-base">Short bio</label>
         <textarea
           name="shortBio"
           defaultValue={shortBio}
           maxLength={500}
           rows={4}
           required
-          className="w-full mt-1 px-3 sm:px-4 py-2 sm:py-3 rounded-sm bg-primary-200 text-primary-800"
+          className="w-full mt-1 px-3 sm:px-4 py-2 sm:py-3 rounded-sm bg-primary-200 text-primary-800 text-sm sm:text-base"
         />
         <small className="text-primary-400 text-xs sm:text-sm">
           Max 500 characters
@@ -125,11 +132,11 @@ function UpdateProfileForm({ user }) {
       </div>
 
       <div className="space-y-1 sm:space-y-2 flex flex-col gap-2">
-        <label>Account type</label>
+        <label className="text-sm sm:text-base">Account type</label>
         <ConfirmRoleSelect currentRole={userRole} />
       </div>
 
-      <div className="pt-3 sm:pt-4 flex justify-end">
+      <div className="pt-3 sm:pt-4 flex justify-center lg:justify-end">
         <SubmitButton pendingLabel="Updating...">Update profile</SubmitButton>
       </div>
     </form>

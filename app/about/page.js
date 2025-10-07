@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function Page() {
   return (
-    <div className="grid gap-y-16 gap-x-10 p-4 sm:p-6 md:p-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-5 text-base sm:text-lg items-center">
+    <div className="grid gap-y-16 gap-x-10 p-4 sm:p-6 md:p-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-5 text-base sm:text-lg items-stretch">
       <div className="lg:col-span-3 space-y-6">
         <h1 className="text-2xl sm:text-3xl lg:text-4xl mb-6 sm:mb-8 text-accent-400 font-medium">
           Welcome to the Skill Swap
@@ -80,10 +80,10 @@ export default function Page() {
             notification — is a moment of growth and connection.
           </p>
 
-          <div>
+          <div className="text-center md:text-left">
             <Link
               href="/jobs"
-              className="inline-block mt-4 bg-accent-500 px-6 sm:px-8 py-3 sm:py-4 text-primary-800 text-base sm:text-lg font-semibold  hover:bg-accent-600 transition-colors rounded-lg cursor-pointer"
+              className="inline-block mt-4 bg-accent-500 px-4 py-3 sm:px-8 sm:py-4 text-primary-800 text-sm sm:text-base md:text-lg font-semibold hover:bg-accent-600 transition-colors rounded-lg cursor-pointer whitespace-nowrap"
             >
               Explore our professional app
             </Link>

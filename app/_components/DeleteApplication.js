@@ -10,7 +10,7 @@ function DeleteApplication({ applicationId, onDelete }) {
   function handleDelete() {
     if (
       confirm(
-        "Are you sure you want to cancel your application? It's undoable!"
+        "Are you sure you want to cancel your application? This action cannot be undone!"
       )
     )
       startTransition(() => onDelete(applicationId));
@@ -19,7 +19,8 @@ function DeleteApplication({ applicationId, onDelete }) {
   return (
     <button
       onClick={handleDelete}
-      className="group flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md uppercase text-[0.7rem] sm:text-xs font-bold text-primary-300 hover:bg-accent-600 transition-colors hover:text-primary-900 disabled:opacity-50 cursor-pointer"
+      disabled={isPending}
+      className="group flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md uppercase text-[0.7rem] sm:text-xs font-bold text-primary-300 hover:bg-accent-600 transition-colors hover:text-primary-900 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
     >
       {!isPending ? (
         <>

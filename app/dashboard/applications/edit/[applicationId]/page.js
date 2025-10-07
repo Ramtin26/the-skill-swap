@@ -1,5 +1,5 @@
 import SubmitButton from "@/app/_components/SubmitButton";
-import UpdateFileUpload from "@/app/_components/UpdateFileUpload";
+import FileUpload from "@/app/_components/FileUpload";
 import { getApplication, getJob } from "@/app/_lib/data-service";
 import { updateApplication } from "@/app/_lib/actions";
 
@@ -11,21 +11,21 @@ export default async function Page({ params }) {
 
   return (
     <div className="px-4 sm:px-6 md:px-8">
-      <h2 className="font-semibold flex flex-wrap gap-1 text-xl sm:text-2xl text-accent-400 mb-5 sm:mb-7">
+      <h2 className="font-semibold text-xl sm:text-2xl text-accent-400 mb-5 sm:mb-7">
         Edit Application for
         <span className="text-accent-600 font-bold">#{title}</span>
       </h2>
 
       <form
         action={updateApplication}
-        className="bg-primary-900 p-4 sm:p-6 md:p-8 text-base sm:text-lg flex flex-col gap-6 rounded-md"
+        className="bg-primary-900 p-4 sm:p-6 md:p-8 flex flex-col gap-6 rounded-md"
       >
         <input name="applicationId" type="hidden" value={applicationId} />
 
-        <UpdateFileUpload resumePath={resumePath} />
+        <FileUpload name="resume" resumePath={resumePath} />
 
         <div>
-          <label className="block mb-2 font-medium text-primary-200">
+          <label className="block mb-2 font-medium text-primary-200 text-sm sm:text-base">
             Note to Employer
           </label>
           <textarea
@@ -34,9 +34,11 @@ export default async function Page({ params }) {
             maxLength={500}
             defaultValue={note || ""}
             placeholder="Why are you a great fit for this role?"
-            className="w-full px-4 py-3 rounded-md bg-primary-200 text-primary-800 placeholder-primary-500"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md bg-primary-200 text-primary-800 placeholder-primary-500 text-sm sm:text-base"
           />
-          <small className="text-primary-400">Max 500 characters</small>
+          <small className="text-primary-400 text-xs sm:text-sm">
+            Max 500 characters
+          </small>
         </div>
 
         <div className="pt-2 sm:pt-4 flex justify-center">

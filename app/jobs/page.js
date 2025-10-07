@@ -26,7 +26,7 @@ export default async function Page({ searchParams }) {
         perfect hire.
       </p>
 
-      <div className="flex justify-end mb-8">
+      <div className="flex justify-center lg:justify-end mb-8">
         <Filter />
       </div>
 
